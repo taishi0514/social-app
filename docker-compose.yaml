@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mysql:8.0@sha256:18dee92bbc23147cf0917a26b079c7b659e1170bd03f2ccc42b91236a02fa34b
+    environment:
+      MYSQL_DATABASE: social-app
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  db-data:
