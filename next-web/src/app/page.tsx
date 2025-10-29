@@ -58,10 +58,10 @@ export default async function Home() {
             </div>
             <div className="flex w-full flex-col gap-3 sm:flex-row">
               <Link
-                href="/"
+                href="/onboarding"
                 className="inline-flex flex-1 items-center justify-center rounded-full border border-slate-200 px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
               >
-                Go to dashboard
+                プロフィール登録へ
               </Link>
               <a
                 href={`/auth/logout?returnTo=${logoutReturnTo}`}
