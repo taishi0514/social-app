@@ -2,38 +2,18 @@ import Link from "next/link";
 
 import { auth0 } from "@/lib/auth0";
 
-const appBaseUrl =
-  process.env.APP_BASE_URL ?? process.env.AUTH0_BASE_URL ?? "http://localhost:3000";
-const logoutReturnTo = encodeURIComponent(new URL("/", appBaseUrl).toString());
-
 export default async function Home() {
-  // Fetch the current Auth0 session; undefined when the user has not signed in.
   const session = await auth0.getSession();
   const user = session?.user;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-6 py-12 text-slate-900">
       <section className="flex w-full max-w-xl flex-col gap-8 rounded-3xl bg-white p-10 shadow-xl shadow-slate-200">
-        <header className="flex flex-col gap-2 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">Social App</h1>
-          <p className="text-sm text-slate-500">
-            {user
-              ? "You are signed in. Jump back into your feed or sign out below."
-              : "Sign in with Auth0 to catch up with friends and share updates."}
-          </p>
-        </header>
 
         {!user ? (
-          <div className="flex flex-col items-center gap-4">
-            <Link
-              href="/login"
-              className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-            >
-              Log in or sign up
-            </Link>
-            <p className="text-xs text-slate-400">
-              Choose “Log in” or “Create account” on the next screen. We redirect
-              you through Auth0 for secure authentication.
+          <div className="flex flex-col items-center gap-6">
+            <p className="text-sm text-slate-500 text-center">
+              会員限定コンテンツ公開中。ログインまたは、会員登録して確認してみよう！
             </p>
           </div>
         ) : (
@@ -63,12 +43,6 @@ export default async function Home() {
               >
                 プロフィール登録へ
               </Link>
-              <a
-                href={`/auth/logout?returnTo=${logoutReturnTo}`}
-                className="inline-flex flex-1 items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-              >
-                Log out
-              </a>
             </div>
           </div>
         )}
