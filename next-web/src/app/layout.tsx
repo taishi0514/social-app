@@ -5,8 +5,6 @@ import Providers from "./providers";
 import "./globals.css";
 import Header from "@/components/header/Header";
 
-export const dynamic = "force-dynamic";
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
