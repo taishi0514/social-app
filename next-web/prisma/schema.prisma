@@ -25,20 +25,6 @@ model User {
   @@map("users")
 }
 
-enum Smoking {
-  never
-  monthly
-  weekly
-  daily
-}
-
-enum AlcoholFreq {
-  never
-  monthly
-  weekly
-  daily
-}
-
 model Info {
   id           Int      @id @default(autoincrement())
   userId       Int      @unique
@@ -46,8 +32,8 @@ model Info {
   walking      Int?
   workOut      Int?
   readingHabit Int? 
-  cigarettes   Smoking?    
-  alcohol      AlcoholFreq? 
+  cigarettes   Int?    
+  alcohol      Int? 
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt      @map("updated_at")
 

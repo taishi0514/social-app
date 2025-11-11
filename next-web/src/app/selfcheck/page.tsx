@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import prisma from "@/lib/client";
 import { auth0 } from "@/lib/auth0";
 
 import SelfCheckForm from "./SelfCheckForm";
@@ -22,15 +23,24 @@ export default async function SelfCheckPage({ searchParams }: PageProps) {
     redirect(`/login?returnTo=${encodeURIComponent(SELF_CHECK_PATH)}`);
   }
 
+  const dbUser = await prisma.user.findUnique({
+    where: { auth0UserId: session.user.sub },
+    select: { name: true, email: true },
+  });
+
   const awaitedParams = await searchParams;
   const errorMessage = getFirstParam(awaitedParams.error);
   const statusParam = getFirstParam(awaitedParams.status);
   const successMessage =
-    statusParam === "success" ? "セルフチェックの内容を保存しました。" : undefined;
+    statusParam === "success"
+      ? "セルフチェックの内容を保存しました。"
+      : undefined;
 
   return (
     <SelfCheckForm
-      userName={session.user.name ?? session.user.email ?? undefined}
+      userName={
+        dbUser?.name ?? session.user.name ?? session.user.email ?? undefined
+      }
       errorMessage={errorMessage}
       successMessage={successMessage}
     />

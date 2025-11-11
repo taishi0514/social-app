@@ -14,7 +14,11 @@ type ProvidersProps = {
 
 export default function Providers({ children }: ProvidersProps) {
   return (
-    <MantineProvider theme={theme} defaultColorScheme="light" forceColorScheme="light">
+    <MantineProvider
+      theme={theme}
+      defaultColorScheme="light"
+      forceColorScheme="light"
+    >
       {children}
     </MantineProvider>
   );

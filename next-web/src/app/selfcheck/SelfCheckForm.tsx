@@ -1,31 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import {
   Alert,
   Box,
   Button,
-  Checkbox,
   Flex,
   NumberInput,
   Paper,
-  Radio,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
 
-import {
-  AlcoholFreqLabels,
-  AlcoholScoreMap,
-  activityPresets,
-  activityScoreMap,
-  alcoholValues,
-  metricOptions,
-  smokingValues,
-  SmokingLabels,
-  SmokingScoreMap,
-} from "./constants";
 import { submitSelfCheck } from "./action";
 
 type Props = {
@@ -34,17 +20,72 @@ type Props = {
   successMessage?: string;
 };
 
-const defaultSelectedMetrics = ["walking", "workOut", "readingHabit"] as const;
+type NumericFieldName =
+  | "salary"
+  | "walking"
+  | "workOut"
+  | "readingHabit"
+  | "cigarettes"
+  | "alcohol";
+
+type NumericFieldConfig = {
+  name: NumericFieldName;
+  title: string;
+  description: string;
+  placeholder: string;
+  suffix?: string;
+};
+
+const numericFields: NumericFieldConfig[] = [
+  {
+    name: "salary",
+    title: "年収",
+    description: "おおよその年収を入力してください（単位: 万円）。",
+    placeholder: "例: 400",
+    suffix: " 万円",
+  },
+  {
+    name: "walking",
+    title: "1日の歩数",
+    description: "1日あたりの平均歩数を入力してください。",
+    placeholder: "例: 8000",
+    suffix: " 歩",
+  },
+  {
+    name: "workOut",
+    title: "週あたりの運動回数",
+    description: "週に行う運動（ジムやスポーツなど）の回数を入力してください。",
+    placeholder: "例: 3",
+    suffix: " 回",
+  },
+  {
+    name: "readingHabit",
+    title: "月あたりの読書冊数",
+    description: "1か月で読むおおよその冊数を入力してください。",
+    placeholder: "例: 2",
+    suffix: " 冊",
+  },
+  {
+    name: "cigarettes",
+    title: "1日あたりの喫煙本数",
+    description: "喫煙している場合は1日平均の本数を入力してください。",
+    placeholder: "例: 5",
+    suffix: " 本",
+  },
+  {
+    name: "alcohol",
+    title: "1週間あたりの飲酒杯数",
+    description: "飲酒する場合は1週間で飲む杯数を入力してください。",
+    placeholder: "例: 6",
+    suffix: " 杯",
+  },
+];
 
 export default function SelfCheckForm({
   userName,
   errorMessage,
   successMessage,
 }: Props) {
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(
-    [...defaultSelectedMetrics],
-  );
-
   return (
     <Box
       component="section"
@@ -54,7 +95,10 @@ export default function SelfCheckForm({
       mih="100vh"
     >
       <Flex justify="center" align="center" w="100%">
-        <form action={submitSelfCheck} style={{ width: "100%", maxWidth: "720px" }}>
+        <form
+          action={submitSelfCheck}
+          style={{ width: "100%", maxWidth: "720px" }}
+        >
           <Paper
             radius="xl"
             shadow="md"
@@ -75,158 +119,29 @@ export default function SelfCheckForm({
                 </Alert>
               ) : null}
 
-              <input
-                type="hidden"
-                name="selectedMetrics"
-                value={selectedMetrics.join(",")}
-              />
-
               <Stack gap="xs">
                 <Title order={2} ta="center" c="gray">
                   セルフチェック
                 </Title>
                 <Text ta="center" c="dimmed">
-                  {userName ? `${userName} さん` : "ログイン中のユーザー"}の知りたいライフスタイルや習慣を選択しましょう。
+                  {userName ? `${userName} さん` : "ログイン中のユーザー"}
+                  のライフスタイル情報を入力しましょう。
                 </Text>
-              </Stack>
-
-              <Stack gap="xs">
-                <Text fw={600} c="gray">
-                  分析したい指標を選択
-                </Text>
-                <Checkbox.Group
-                  value={selectedMetrics}
-                  onChange={setSelectedMetrics}
-                >
-                  <Stack gap="xs">
-                    {metricOptions.map((option) => (
-                      <Paper
-                        key={option.value}
-                        withBorder
-                        radius="lg"
-                        p="md"
-                        shadow={
-                          selectedMetrics.includes(option.value) ? "sm" : "xs"
-                        }
-                      >
-                        <Checkbox
-                          value={option.value}
-                          label={option.label}
-                          description={option.description}
-                        />
-                      </Paper>
-                    ))}
-                  </Stack>
-                </Checkbox.Group>
               </Stack>
 
               <Stack gap="xl">
-                {selectedMetrics.includes("salary") ? (
-                  <Paper withBorder radius="lg" p="lg">
-                    <Stack gap="md">
-                      <Title order={3} size="h4" c="gray">
-                        年収
-                      </Title>
-                      <Text size="sm" c="dimmed">
-                        おおよその年収を入力してください（単位: 万円）。
-                      </Text>
-                      <NumberInput
-                        name="salary"
-                        label="年収"
-                        suffix=" 万円"
-                        min={0}
-                        clampBehavior="strict"
-                        placeholder="例: 400"
-                      />
-                    </Stack>
-                  </Paper>
-                ) : null}
-
-                {renderActivitySection({
-                  metricKey: "walking",
-                  metricLabel: "1日の歩数",
-                  unitHint: "歩/日",
-                  selectedMetrics,
-                })}
-
-                {renderActivitySection({
-                  metricKey: "workOut",
-                  metricLabel: "週あたりの運動回数",
-                  unitHint: "回/週",
-                  selectedMetrics,
-                })}
-
-                {renderActivitySection({
-                  metricKey: "readingHabit",
-                  metricLabel: "月あたりの読書冊数",
-                  unitHint: "冊/月",
-                  selectedMetrics,
-                })}
-
-                {selectedMetrics.includes("cigarettes") ? (
-                  <Paper withBorder radius="lg" p="lg">
-                    <Stack gap="md">
-                      <Title order={3} size="h4" c="gray">
-                        喫煙頻度
-                      </Title>
-                      <Text size="sm" c="dimmed">
-                        現在の喫煙状況に近いものを選び、必要であれば任意の数値を入力してください。
-                      </Text>
-                      <Radio.Group name="cigarettesPreset">
-                        <Stack gap="sm">
-                          {smokingValues.map((value) => (
-                            <Radio
-                              key={value}
-                              value={value}
-                              label={`${SmokingLabels[value]}（スコア: ${SmokingScoreMap[value]}）`}
-                            />
-                          ))}
-                        </Stack>
-                      </Radio.Group>
-                      <NumberInput
-                        name="cigarettesCustom"
-                        label="1日あたりのおおよその本数（任意）"
-                        placeholder="例: 5"
-                        min={0}
-                        clampBehavior="strict"
-                      />
-                    </Stack>
-                  </Paper>
-                ) : null}
-
-                {selectedMetrics.includes("alcohol") ? (
-                  <Paper withBorder radius="lg" p="lg">
-                    <Stack gap="md">
-                      <Title order={3} size="h4" c="gray">
-                        飲酒頻度
-                      </Title>
-                      <Text size="sm" c="dimmed">
-                        最も近い頻度を選択し、必要に応じて1週間あたりの杯数などを入力できます。
-                      </Text>
-                      <Radio.Group name="alcoholPreset">
-                        <Stack gap="sm">
-                          {alcoholValues.map((value) => (
-                            <Radio
-                              key={value}
-                              value={value}
-                              label={`${AlcoholFreqLabels[value]}（スコア: ${AlcoholScoreMap[value]}）`}
-                            />
-                          ))}
-                        </Stack>
-                      </Radio.Group>
-                      <NumberInput
-                        name="alcoholCustom"
-                        label="1週間あたりのおおよその杯数（任意）"
-                        placeholder="例: 6"
-                        min={0}
-                        clampBehavior="strict"
-                      />
-                    </Stack>
-                  </Paper>
-                ) : null}
+                {numericFields.map((field) => (
+                  <NumericField key={field.name} {...field} />
+                ))}
               </Stack>
 
-              <Button type="submit" radius="xl" size="md" color="teal" variant="light">
+              <Button
+                type="submit"
+                radius="xl"
+                size="md"
+                color="teal"
+                variant="light"
+              >
                 スコア算出
               </Button>
             </Stack>
@@ -237,53 +152,30 @@ export default function SelfCheckForm({
   );
 }
 
-type ActivitySectionProps = {
-  metricKey: "walking" | "workOut" | "readingHabit";
-  metricLabel: string;
-  unitHint: string;
-  selectedMetrics: string[];
-};
-
-function renderActivitySection({
-  metricKey,
-  metricLabel,
-  unitHint,
-  selectedMetrics,
-}: ActivitySectionProps) {
-  if (!selectedMetrics.includes(metricKey)) {
-    return null;
-  }
-
+function NumericField({
+  name,
+  title,
+  description,
+  placeholder,
+  suffix,
+}: NumericFieldConfig) {
   return (
     <Paper withBorder radius="lg" p="lg">
       <Stack gap="md">
         <Title order={3} size="h4" c="gray">
-          {metricLabel}
+          {title}
         </Title>
         <Text size="sm" c="dimmed">
-          代表的な頻度から選ぶか、任意の数値（{unitHint}）を入力してください。
+          {description}
         </Text>
-        <Radio.Group name={`${metricKey}Preset`}>
-          <Stack gap="sm">
-            {activityPresets.map((preset) => (
-              <Radio
-                key={preset.value}
-                value={preset.value}
-                label={`${preset.label}（スコア: ${activityScoreMap[preset.value]}）`}
-              />
-            ))}
-          </Stack>
-        </Radio.Group>
         <NumberInput
-          name={`${metricKey}Custom`}
-          label={`任意の数値（${unitHint}）`}
-          placeholder="例: 3"
+          name={name}
+          label={title}
+          placeholder={placeholder}
+          suffix={suffix}
           min={0}
           clampBehavior="strict"
         />
-        <Text size="xs" c="dimmed">
-          選択肢を選ぶと上記のスコアが使われます。任意の数値を入力した場合は、そちらが優先されます。
-        </Text>
       </Stack>
     </Paper>
   );

@@ -7,48 +7,9 @@ import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/client";
 import { auth0 } from "@/lib/auth0";
 
-import {
-  resolveSelfCheckValues,
-  selfCheckFormSchema,
-  SelfCheckFormValues,
-  getMetricLabel,
-} from "./schema";
+import { selfCheckFormSchema } from "./schema";
 
 const SELF_CHECK_PATH = "/selfcheck";
-
-function parseSelectedMetrics(value: FormDataEntryValue | undefined) {
-  if (!value || typeof value !== "string") {
-    return [];
-  }
-
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function ensureMetricProvided(
-  metricKey: string,
-  selectedMetrics: Set<string>,
-  predicate: () => boolean,
-  message: string,
-  issues: string[],
-) {
-  if (!selectedMetrics.has(metricKey)) {
-    return;
-  }
-
-  if (!predicate()) {
-    issues.push(message);
-  }
-}
-
-function hasActivityInput(
-  custom?: number,
-  preset?: SelfCheckFormValues["walkingPreset"],
-) {
-  return typeof custom === "number" || typeof preset === "string";
-}
 
 export async function submitSelfCheck(formData: FormData) {
   const session = await auth0.getSession();
@@ -69,17 +30,6 @@ export async function submitSelfCheck(formData: FormData) {
   }
 
   const rawEntries = Object.fromEntries(formData.entries());
-  const selectedMetrics = new Set(
-    parseSelectedMetrics(rawEntries.selectedMetrics),
-  );
-
-  if (selectedMetrics.size === 0) {
-    const params = new URLSearchParams({
-      error: "分析したい指標を少なくとも1つ選択してください。",
-    });
-    redirect(`${SELF_CHECK_PATH}?${params.toString()}`);
-  }
-
   const parseResult = selfCheckFormSchema.safeParse(rawEntries);
 
   if (!parseResult.success) {
@@ -89,107 +39,42 @@ export async function submitSelfCheck(formData: FormData) {
     redirect(`${SELF_CHECK_PATH}?${params.toString()}`);
   }
 
-  const formValues = parseResult.data;
-  const issues: string[] = [];
-
-  ensureMetricProvided(
-    "salary",
-    selectedMetrics,
-    () => typeof formValues.salary === "number",
-    "年収の値を入力してください。",
-    issues,
-  );
-
-  ensureMetricProvided(
-    "walking",
-    selectedMetrics,
-    () => hasActivityInput(formValues.walkingCustom, formValues.walkingPreset),
-    `${getMetricLabel("walking")}の値を入力または選択してください。`,
-    issues,
-  );
-
-  ensureMetricProvided(
-    "workOut",
-    selectedMetrics,
-    () => hasActivityInput(formValues.workOutCustom, formValues.workOutPreset),
-    `${getMetricLabel("workOut")}の値を入力または選択してください。`,
-    issues,
-  );
-
-  ensureMetricProvided(
-    "readingHabit",
-    selectedMetrics,
-    () =>
-      hasActivityInput(
-        formValues.readingHabitCustom,
-        formValues.readingHabitPreset,
-      ),
-    `${getMetricLabel("readingHabit")}の値を入力または選択してください。`,
-    issues,
-  );
-
-  ensureMetricProvided(
-    "cigarettes",
-    selectedMetrics,
-    () =>
-      typeof formValues.cigarettesPreset === "string" ||
-      typeof formValues.cigarettesCustom === "number",
-    `${getMetricLabel("cigarettes")}の値を入力または選択してください。`,
-    issues,
-  );
-
-  ensureMetricProvided(
-    "alcohol",
-    selectedMetrics,
-    () =>
-      typeof formValues.alcoholPreset === "string" ||
-      typeof formValues.alcoholCustom === "number",
-    `${getMetricLabel("alcohol")}の値を入力または選択してください。`,
-    issues,
-  );
-
-  if (issues.length > 0) {
-    const params = new URLSearchParams({
-      error: issues[0] ?? "入力内容を確認してください。",
-    });
-    redirect(`${SELF_CHECK_PATH}?${params.toString()}`);
-  }
-
-  const resolved = resolveSelfCheckValues(formValues);
+  const { salary, walking, workOut, readingHabit, cigarettes, alcohol } =
+    parseResult.data;
 
   const updateData: Prisma.InfoUncheckedUpdateInput = {};
   const createData: Prisma.InfoUncheckedCreateInput = {
     userId: user.id,
   };
 
-  if (resolved.salary !== undefined) {
-    updateData.salary = resolved.salary;
-    createData.salary = resolved.salary;
+  if (salary !== undefined) {
+    updateData.salary = salary;
+    createData.salary = salary;
   }
 
-  if (resolved.walking !== undefined) {
-    updateData.walking = resolved.walking;
-    createData.walking = resolved.walking;
+  if (walking !== undefined) {
+    updateData.walking = walking;
+    createData.walking = walking;
   }
 
-  if (resolved.workOut !== undefined) {
-    updateData.workOut = resolved.workOut;
-    createData.workOut = resolved.workOut;
+  if (workOut !== undefined) {
+    updateData.workOut = workOut;
+    createData.workOut = workOut;
   }
 
-  if (resolved.readingHabit !== undefined) {
-    updateData.readingHabit = resolved.readingHabit;
-    createData.readingHabit = resolved.readingHabit;
+  if (readingHabit !== undefined) {
+    updateData.readingHabit = readingHabit;
+    createData.readingHabit = readingHabit;
   }
 
-  if (resolved.cigarettes !== undefined) {
-    updateData.cigarettes = resolved.cigarettes;
-    createData.cigarettes = resolved.cigarettes;
+  if (cigarettes !== undefined) {
+    updateData.cigarettes = cigarettes;
+    createData.cigarettes = cigarettes;
   }
 
-  if (resolved.alcohol !== undefined) {
-    updateData.alcohol = resolved.alcohol;
-    createData.alcohol = resolved.alcohol;
+  if (alcohol !== undefined) {
+    updateData.alcohol = alcohol;
+    createData.alcohol = alcohol;
   }
 
   await prisma.info.upsert({
