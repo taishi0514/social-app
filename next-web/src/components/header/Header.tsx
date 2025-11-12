@@ -5,7 +5,9 @@ import { Anchor, Box, Button, Container, Group, Text } from "@mantine/core";
 import { auth0 } from "@/lib/auth0";
 
 const appBaseUrl =
-  process.env.APP_BASE_URL ?? process.env.AUTH0_BASE_URL ?? "http://localhost:3000";
+  process.env.APP_BASE_URL ??
+  process.env.AUTH0_BASE_URL ??
+  "http://localhost:3000";
 const logoutReturnTo = encodeURIComponent(new URL("/", appBaseUrl).toString());
 const loginParams = new URLSearchParams({ returnTo: "/" }).toString();
 const signupParams = new URLSearchParams({

@@ -20,8 +20,7 @@ export const metadata: Metadata = {
     default: "Social App",
     template: "%s | Social App",
   },
-  description:
-    "Sign in securely with Auth0 to join the Social App community.",
+  description: "Sign in securely with Auth0 to join the Social App community.",
 };
 
 export default function RootLayout({
@@ -30,7 +29,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" data-mantine-color-scheme="light" className="min-h-screen bg-white">
+    <html
+      lang="ja"
+      data-mantine-color-scheme="light"
+      className="min-h-screen bg-white"
+    >
       <head>
         <ColorSchemeScript defaultColorScheme="light" />
       </head>

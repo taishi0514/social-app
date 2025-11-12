@@ -32,7 +32,8 @@ export async function completeOnboarding(formData: FormData) {
 
   if (!parseResult.success) {
     const params = new URLSearchParams({
-      error: parseResult.error.issues[0]?.message ?? "入力内容を確認してください。",
+      error:
+        parseResult.error.issues[0]?.message ?? "入力内容を確認してください。",
     });
 
     const nameValue = formData.get("name");

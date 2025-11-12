@@ -21,5 +21,24 @@ model User {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
+  info        Info?
   @@map("users")
+}
+
+model Info {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  salary       Int?
+  walking      Int?
+  workOut      Int?
+  readingHabit Int? 
+  cigarettes   Int?    
+  alcohol      Int? 
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt      @map("updated_at")
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("info")
 }

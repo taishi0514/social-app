@@ -6,6 +6,7 @@ import {
   Button,
   Container,
   Flex,
+  Group,
   Paper,
   Stack,
   Text,
@@ -16,14 +17,22 @@ import { auth0 } from "@/lib/auth0";
 export default async function Home() {
   const session = await auth0.getSession();
   const user = session?.user;
+  const hasProfileName = Boolean(user?.name?.trim());
 
   return (
-    <Flex mih="100vh"
-        justify="center"
-        align="center"
-        bg="var(--mantine-color-gray-0)"
+    <Flex
+      mih="100vh"
+      justify="center"
+      align="center"
+      bg="var(--mantine-color-gray-0)"
     >
-      <Box component="main" bg="var(--mantine-color-gray-0)" py="xl" px="md" miw={320}>
+      <Box
+        component="main"
+        bg="var(--mantine-color-gray-0)"
+        py="xl"
+        px="md"
+        miw={320}
+      >
         <Container size="sm">
           <Paper radius="xl" shadow="lg" p="xl" withBorder>
             {!user ? (
@@ -48,19 +57,46 @@ export default async function Home() {
                     </Avatar>
                   )}
                   <Stack gap={0} align="center">
-                    <Text fw={600}>{user.name ?? user.email ?? "Authenticated user"}</Text>
+                    <Text fw={600}>
+                      {user.name ?? user.email ?? "Authenticated user"}
+                    </Text>
                   </Stack>
                 </Stack>
-                <Button
-                  component={Link}
-                  href="/onboarding"
-                  variant="outline"
-                  radius="xl"
-                  size="sm"
-                  color="teal"
-                >
-                  プロフィール登録へ
-                </Button>
+                {hasProfileName ? (
+                  <Group gap="md" justify="center" wrap="wrap">
+                    <Button
+                      component={Link}
+                      href="/onboarding"
+                      variant="outline"
+                      radius="xl"
+                      size="sm"
+                      color="teal"
+                    >
+                      プロフィール編集へ
+                    </Button>
+                    <Button
+                      component={Link}
+                      href="/selfcheck"
+                      radius="xl"
+                      size="sm"
+                      color="teal"
+                      variant="light"
+                    >
+                      セルフチェックへ
+                    </Button>
+                  </Group>
+                ) : (
+                  <Button
+                    component={Link}
+                    href="/onboarding"
+                    variant="outline"
+                    radius="xl"
+                    size="sm"
+                    color="teal"
+                  >
+                    プロフィール登録へ
+                  </Button>
+                )}
               </Stack>
             )}
           </Paper>

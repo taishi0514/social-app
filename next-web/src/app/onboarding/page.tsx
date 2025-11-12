@@ -1,6 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import {
+  Alert,
+  Box,
+  Button,
+  Flex,
+  Paper,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 
 import prisma from "@/lib/client";
 import { auth0 } from "@/lib/auth0";
@@ -33,62 +44,76 @@ export default async function OnboardingPage({
     where: { auth0UserId: session.user.sub },
   });
 
-  if (existingUser) {
-    redirect("/");
-  }
-
   const defaultName =
+    existingUser?.name ??
     getFirstParam(searchParams?.name) ??
     session.user.name ??
     session.user.email ??
     "";
   const errorMessage = getFirstParam(searchParams?.error);
+  const hasProfile = Boolean(existingUser?.name);
+  const title = hasProfile ? "プロフィールを編集" : "プロフィールを作成";
+  const description = hasProfile
+    ? "表示名を更新してプロフィールを整えましょう。"
+    : "表示名を入力して会員登録を完了してください。";
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-6 py-12 text-slate-900">
-      <section className="flex w-full max-w-md flex-col gap-8 rounded-3xl bg-white p-10 shadow-xl shadow-slate-200">
-        <header className="flex flex-col gap-3 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">
-            プロフィールを作成
-          </h1>
-          <p className="text-sm text-slate-500">
-            表示名を入力して会員登録を完了してください。
-          </p>
-        </header>
+    <Flex
+      component="main"
+      mih="100vh"
+      bg="var(--mantine-color-gray-0)"
+      justify="center"
+      align="center"
+      px="md"
+      py="xl"
+    >
+      <Box w="100%" maw={640}>
+        <Paper radius="xl" shadow="lg" withBorder p={{ base: "lg", md: "xl" }}>
+          <Stack gap="lg">
+            <Stack gap={4} ta="center">
+              <Title order={1}>{title}</Title>
+              <Text c="dimmed">{description}</Text>
+            </Stack>
 
-        <form action={completeOnboarding} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
-            ユーザー名
-            <input
-              type="text"
-              name="name"
-              defaultValue={defaultName}
-              required
-              placeholder="例: 太郎"
-              className="rounded-2xl border border-slate-200 px-4 py-3 text-base font-normal text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-            />
-          </label>
+            {errorMessage ? (
+              <Alert color="red" radius="lg" title="入力エラー">
+                {errorMessage}
+              </Alert>
+            ) : null}
 
-          {errorMessage ? (
-            <p className="text-sm text-red-600">{errorMessage}</p>
-          ) : null}
+            <form action={completeOnboarding}>
+              <Stack gap="md">
+                <TextInput
+                  label="ユーザー名"
+                  name="name"
+                  defaultValue={defaultName}
+                  required
+                  placeholder="例: 太郎"
+                  radius="lg"
+                  size="md"
+                  autoComplete="name"
+                />
 
-          <button
-            type="submit"
-            className="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-          >
-            登録する
-          </button>
-        </form>
+                <Button type="submit" radius="xl" size="md" color="teal">
+                  {hasProfile ? "プロフィールを更新" : "登録する"}
+                </Button>
+              </Stack>
+            </form>
 
-        <Link
-          href="/"
-          className="inline-flex items-center justify-center text-sm font-medium text-slate-500 transition hover:text-slate-700"
-        >
-          ← トップへ戻る
-        </Link>
-      </section>
-    </main>
+            <Button
+              component={Link}
+              href="/"
+              variant="subtle"
+              color="gray"
+              radius="xl"
+              size="sm"
+            >
+              ← トップへ戻る
+            </Button>
+          </Stack>
+        </Paper>
+      </Box>
+    </Flex>
   );
 }
 
