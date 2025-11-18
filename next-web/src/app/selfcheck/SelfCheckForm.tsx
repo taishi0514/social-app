@@ -18,6 +18,7 @@ type Props = {
   userName?: string;
   errorMessage?: string;
   successMessage?: string;
+  initialValues?: Partial<Record<NumericFieldName, number | null>>;
 };
 
 type NumericFieldName =
@@ -34,6 +35,7 @@ type NumericFieldConfig = {
   description: string;
   placeholder: string;
   suffix?: string;
+  initialValue?: number;
 };
 
 const numericFields: NumericFieldConfig[] = [
@@ -85,6 +87,7 @@ export default function SelfCheckForm({
   userName,
   errorMessage,
   successMessage,
+  initialValues,
 }: Props) {
   return (
     <Box
@@ -131,7 +134,11 @@ export default function SelfCheckForm({
 
               <Stack gap="xl">
                 {numericFields.map((field) => (
-                  <NumericField key={field.name} {...field} />
+                  <NumericField
+                    key={field.name}
+                    initialValue={initialValues?.[field.name] ?? undefined}
+                    {...field}
+                  />
                 ))}
               </Stack>
 
@@ -142,7 +149,7 @@ export default function SelfCheckForm({
                 color="teal"
                 variant="light"
               >
-                スコア算出
+                スコアを算出
               </Button>
             </Stack>
           </Paper>
@@ -158,6 +165,7 @@ function NumericField({
   description,
   placeholder,
   suffix,
+  initialValue,
 }: NumericFieldConfig) {
   return (
     <Paper withBorder radius="lg" p="lg">
@@ -175,6 +183,7 @@ function NumericField({
           suffix={suffix}
           min={0}
           clampBehavior="strict"
+          defaultValue={initialValue ?? undefined}
         />
       </Stack>
     </Paper>

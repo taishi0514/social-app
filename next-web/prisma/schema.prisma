@@ -21,7 +21,9 @@ model User {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  info        Info?
+  info    Info?
+  results Result[]
+
   @@map("users")
 }
 
@@ -31,14 +33,37 @@ model Info {
   salary       Int?
   walking      Int?
   workOut      Int?
-  readingHabit Int? 
-  cigarettes   Int?    
-  alcohol      Int? 
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt      @map("updated_at")
+  readingHabit Int?
+  cigarettes   Int?
+  alcohol      Int?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("info")
+}
+
+enum ResultMetric {
+  salary
+  walking
+  workOut
+  readingHabit
+  cigarettes
+  alcohol
+}
+
+model Result {
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  metric     ResultMetric
+  score      Int
+  percentile Int
+  computedAt DateTime     @default(now()) @map("computed_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("result")
 }

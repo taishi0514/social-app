@@ -25,7 +25,20 @@ export default async function SelfCheckPage({ searchParams }: PageProps) {
 
   const dbUser = await prisma.user.findUnique({
     where: { auth0UserId: session.user.sub },
-    select: { name: true, email: true },
+    select: {
+      name: true,
+      email: true,
+      info: {
+        select: {
+          salary: true,
+          walking: true,
+          workOut: true,
+          readingHabit: true,
+          cigarettes: true,
+          alcohol: true,
+        },
+      },
+    },
   });
 
   const awaitedParams = await searchParams;
@@ -43,6 +56,7 @@ export default async function SelfCheckPage({ searchParams }: PageProps) {
       }
       errorMessage={errorMessage}
       successMessage={successMessage}
+      initialValues={dbUser?.info ?? undefined}
     />
   );
 }
