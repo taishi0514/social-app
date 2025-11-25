@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { MetricKey } from "@/constants/metrics";
 
 import {
@@ -16,6 +16,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import { ShareToXButton } from "@/components/share/ShareButton";
 
 export type MetricViewModel = {
   key: MetricKey;
@@ -29,23 +30,37 @@ export type MetricViewModel = {
 type Props = {
   metrics: MetricViewModel[];
   userName: string;
+  sharePath: string;
 };
 
-export function MetricDashboard({ metrics, userName }: Props) {
+export function MetricDashboard({ metrics, userName, sharePath }: Props) {
   const [activeKey, setActiveKey] = useState(metrics[0]?.key ?? "");
   const activeMetric = metrics.find((metric) => metric.key === activeKey);
+  const [shareUrl, setShareUrl] = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !sharePath) return;
+    const url = new URL(sharePath, window.location.origin);
+    setShareUrl(url.toString());
+  }, [sharePath]);
 
   return (
     <Stack gap="xl">
       <Paper radius="xl" shadow="md" withBorder p="xl">
-        <Stack gap="xs">
-          <Title order={2} c="gray.8">
-            {userName} さんのダッシュボード
-          </Title>
-          <Text c="dimmed" size="sm">
-            直近のセルフチェック結果をもとに、各指標がコミュニティ内でどの位置にいるかを表示しています。
-          </Text>
-        </Stack>
+        <Group justify="space-between" align="flex-start">
+          <Stack gap="xs">
+            <Title order={2} c="gray.8">
+              {userName} さんのダッシュボード
+            </Title>
+            <Text c="dimmed" size="sm">
+              直近のセルフチェック結果をもとに、各指標がコミュニティ内でどの位置にいるかを表示しています。
+            </Text>
+          </Stack>
+          <ShareToXButton
+            text={`${userName} さんのダッシュボードをチェック`}
+            url={shareUrl}
+          />
+        </Group>
       </Paper>
 
       {metrics.length > 0 ? (
