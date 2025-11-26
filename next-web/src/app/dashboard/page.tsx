@@ -63,8 +63,7 @@ export default async function DashboardPage() {
     })
     .filter((item): item is MetricViewModel => Boolean(item));
 
-  const userName =
-    user.name ?? session.user.name ?? session.user.email ?? "あなた";
+  const userName = user.name ?? session.user.name ?? "あなた";
   const sharePath = user.publicId ? `/share/${user.publicId}` : "";
 
   return (

@@ -13,11 +13,21 @@ import {
 } from "@mantine/core";
 
 import { auth0 } from "@/lib/auth0";
+import prisma from "@/lib/client";
 
 export default async function Home() {
   const session = await auth0.getSession();
   const user = session?.user;
-  const hasProfileName = Boolean(user?.name?.trim());
+  const dbUser = user?.sub
+    ? await prisma.user.findUnique({
+        where: { auth0UserId: user.sub },
+      })
+    : null;
+
+  // 名前がなければメールは表示しない（初期値は "Authenticated user"）
+  // 名前未登録の場合はメールを出さず空にする（Auth0のnameも使わない）
+  const displayName = dbUser?.name ?? "";
+  const hasProfileName = Boolean(dbUser?.name?.trim());
 
   return (
     <Flex
@@ -47,19 +57,17 @@ export default async function Home() {
                   {user.picture ? (
                     <Avatar
                       src={user.picture}
-                      alt={user.name ?? "Authenticated user"}
+                      alt={displayName || "Authenticated user"}
                       size={72}
                       radius="xl"
                     />
                   ) : (
                     <Avatar size={72} radius="xl" color="teal">
-                      {user.name?.slice(0, 1)?.toUpperCase() ?? "U"}
+                      {(displayName || "U").slice(0, 1)?.toUpperCase()}
                     </Avatar>
                   )}
                   <Stack gap={0} align="center">
-                    <Text fw={600}>
-                      {user.name ?? user.email ?? "Authenticated user"}
-                    </Text>
+                    <Text fw={600} c="gray">{displayName}</Text>
                   </Stack>
                 </Stack>
                 {hasProfileName ? (
@@ -67,7 +75,7 @@ export default async function Home() {
                     <Button
                       component={Link}
                       href="/onboarding"
-                      variant="outline"
+                      variant="light"
                       radius="xl"
                       size="sm"
                       color="teal"
