@@ -67,7 +67,9 @@ export default async function Home() {
                     </Avatar>
                   )}
                   <Stack gap={0} align="center">
-                    <Text fw={600} c="gray">{displayName}</Text>
+                    <Text fw={600} c="gray">
+                      {displayName}
+                    </Text>
                   </Stack>
                 </Stack>
                 {hasProfileName ? (

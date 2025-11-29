@@ -164,11 +164,20 @@ export function MetricDashboard({ metrics, userName, sharePath }: Props) {
       ) : (
         <Paper radius="xl" withBorder p="xl" ta="center">
           <Stack gap="xs" align="center">
-            <Text fw={600} c="gray">セルフチェックのデータがありません。</Text>
+            <Text fw={600} c="gray">
+              セルフチェックのデータがありません。
+            </Text>
             <Text c="dimmed" size="sm">
               まずはセルフチェックを実施して、結果を保存しましょう。
             </Text>
-            <Button component="a" href="/selfcheck" radius="xl" color="teal" variant="light" maw={350}>
+            <Button
+              component="a"
+              href="/selfcheck"
+              radius="xl"
+              color="teal"
+              variant="light"
+              maw={350}
+            >
               セルフチェックへ
             </Button>
           </Stack>

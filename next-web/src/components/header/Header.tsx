@@ -47,7 +47,7 @@ export default async function Header() {
                 href="/dashboard"
                 radius="xl"
                 size="sm"
-                 color="gray"
+                color="gray"
                 variant="outline"
               >
                 結果を確認
