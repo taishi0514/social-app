@@ -1,13 +1,6 @@
 import Link from "next/link";
 
-import {
-  Box,
-  Button,
-  Container,
-  Paper,
-  Stack,
-  Title,
-} from "@mantine/core";
+import { Box, Button, Container, Paper, Stack, Title } from "@mantine/core";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export default function WaitingPage() {

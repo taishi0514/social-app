@@ -66,7 +66,12 @@ export function MetricDashboard({ metrics, userName }: Props) {
 
           {activeMetric ? (
             <Paper radius="xl" shadow="lg" withBorder p="xl">
-              <Group justify="space-between" align="center" wrap="wrap" gap="xl">
+              <Group
+                justify="space-between"
+                align="center"
+                wrap="wrap"
+                gap="xl"
+              >
                 <Stack gap="xs">
                   <Text size="sm" c="dimmed">
                     現在値
@@ -129,7 +134,13 @@ export function MetricDashboard({ metrics, userName }: Props) {
                       {metric.percentile}%
                     </Badge>
                   </Group>
-                  <Progress value={metric.percentile} color="teal" size="lg" radius="xl" animated />
+                  <Progress
+                    value={metric.percentile}
+                    color="teal"
+                    size="lg"
+                    radius="xl"
+                    animated
+                  />
                 </Stack>
               </Card>
             ))}
@@ -142,7 +153,13 @@ export function MetricDashboard({ metrics, userName }: Props) {
             <Text c="dimmed" size="sm">
               まずはセルフチェックを実施して、結果を保存しましょう。
             </Text>
-            <Button component="a" href="/selfcheck" radius="xl" color="teal" variant="light">
+            <Button
+              component="a"
+              href="/selfcheck"
+              radius="xl"
+              color="teal"
+              variant="light"
+            >
               セルフチェックへ
             </Button>
           </Stack>
