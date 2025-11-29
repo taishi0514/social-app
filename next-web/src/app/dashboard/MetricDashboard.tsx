@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { MetricKey } from "@/constants/metrics";
+import { PRIVATE_METRICS, type MetricKey } from "@/constants/metrics";
 
 import {
   Badge,
+  Box,
   Button,
   Card,
   Group,
+  Overlay,
   Paper,
   Progress,
   RingProgress,
@@ -31,9 +33,21 @@ type Props = {
   metrics: MetricViewModel[];
   userName: string;
   sharePath: string;
+  isAuthenticated?: boolean;
 };
 
-export function MetricDashboard({ metrics, userName, sharePath }: Props) {
+export function MetricDashboard({
+  metrics,
+  userName,
+  sharePath,
+  isAuthenticated = true,
+}: Props) {
+  // メトリクスを公開/非公開に分類
+  const publicMetrics = metrics.filter((m) => !PRIVATE_METRICS.includes(m.key));
+  const privateMetrics = metrics.filter((m) => PRIVATE_METRICS.includes(m.key));
+
+  // マスク対象かどうかを判定
+  const isPrivateMetric = (key: MetricKey) => PRIVATE_METRICS.includes(key);
   const [activeKey, setActiveKey] = useState(metrics[0]?.key ?? "");
   const activeMetric = metrics.find((metric) => metric.key === activeKey);
   const [shareUrl, setShareUrl] = useState("");
@@ -80,55 +94,110 @@ export function MetricDashboard({ metrics, userName, sharePath }: Props) {
           </Group>
 
           {activeMetric ? (
-            <Paper radius="xl" shadow="lg" withBorder p="xl">
-              <Group
-                justify="space-between"
-                align="center"
-                wrap="wrap"
-                gap="xl"
-              >
-                <Stack gap="xs">
-                  <Text size="sm" c="dimmed">
-                    現在値
-                  </Text>
-                  <Group gap={4}>
-                    <Text fw={600} size="xl" c="dimmed">
-                      {activeMetric.value.toLocaleString()}
+            <Box pos="relative">
+              <Paper radius="xl" shadow="lg" withBorder p="xl">
+                <Group
+                  justify="space-between"
+                  align="center"
+                  wrap="wrap"
+                  gap="xl"
+                >
+                  <Stack gap="xs">
+                    <Text size="sm" c="dimmed">
+                      現在値
                     </Text>
-                    <Text c="dimmed">{activeMetric.unit}</Text>
-                  </Group>
-                  <Badge color="teal" variant="light" size="lg">
-                    上位 {activeMetric.percentile} %
-                  </Badge>
-                  <Text size="sm" c="dimmed">
-                    {activeMetric.hint}
-                  </Text>
-                </Stack>
+                    <Group gap={4}>
+                      <Text fw={600} size="xl" c="dimmed">
+                        {activeMetric.value.toLocaleString()}
+                      </Text>
+                      <Text c="dimmed">{activeMetric.unit}</Text>
+                    </Group>
+                    <Badge color="teal" variant="light" size="lg">
+                      上位 {activeMetric.percentile} %
+                    </Badge>
+                    <Text size="sm" c="dimmed">
+                      {activeMetric.hint}
+                    </Text>
+                  </Stack>
 
-                <RingProgress
-                  size={220}
-                  thickness={22}
-                  label={
-                    <Stack gap={0} align="center">
-                      <Text size="md" c="dimmed">
-                        上位
+                  <RingProgress
+                    size={220}
+                    thickness={22}
+                    label={
+                      <Stack gap={0} align="center">
+                        <Text size="md" c="dimmed">
+                          上位
+                        </Text>
+                        <Text fw={700} size="xl" c="dimmed">
+                          {activeMetric.percentile}%
+                        </Text>
+                      </Stack>
+                    }
+                    sections={[
+                      { value: activeMetric.percentile, color: "teal" },
+                      { value: 100 - activeMetric.percentile, color: "gray.2" },
+                    ]}
+                  />
+                </Group>
+              </Paper>
+
+              {/* 非公開メトリクス選択時のオーバーレイ */}
+              {!isAuthenticated && isPrivateMetric(activeMetric.key) && (
+                <>
+                  <Overlay
+                    color="#fff"
+                    backgroundOpacity={0.6}
+                    blur={3}
+                    radius="xl"
+                  />
+                  <Box
+                    pos="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 201,
+                    }}
+                  >
+                    <Stack gap="xs" align="center">
+                      <Text size="sm" c="dark" fw={500} ta="center">
+                        コンテンツを閲覧するには
                       </Text>
-                      <Text fw={700} size="xl" c="dimmed">
-                        {activeMetric.percentile}%
-                      </Text>
+                      <Group gap="xs">
+                        <Button
+                          component="a"
+                          href="/auth/login?screen_hint=signup"
+                          size="sm"
+                          radius="xl"
+                          color="blue"
+                        >
+                          無料ユーザー登録
+                        </Button>
+                        <Button
+                          component="a"
+                          href="/auth/login"
+                          size="sm"
+                          radius="xl"
+                          variant="outline"
+                          color="blue"
+                        >
+                          ログイン
+                        </Button>
+                      </Group>
                     </Stack>
-                  }
-                  sections={[
-                    { value: activeMetric.percentile, color: "teal" },
-                    { value: 100 - activeMetric.percentile, color: "gray.2" },
-                  ]}
-                />
-              </Group>
-            </Paper>
+                  </Box>
+                </>
+              )}
+            </Box>
           ) : null}
 
+          {/* 公開メトリクスのカード */}
           <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
-            {metrics.map((metric) => (
+            {publicMetrics.map((metric) => (
               <Card key={metric.key} withBorder radius="lg" shadow="xs" p="lg">
                 <Stack gap="sm">
                   <Group justify="space-between" align="flex-start">
@@ -160,6 +229,103 @@ export function MetricDashboard({ metrics, userName, sharePath }: Props) {
               </Card>
             ))}
           </SimpleGrid>
+
+          {/* 非公開メトリクスのカード（マスク対象） */}
+          {privateMetrics.length > 0 && (
+            <Box pos="relative">
+              <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
+                {privateMetrics.map((metric) => (
+                  <Card
+                    key={metric.key}
+                    withBorder
+                    radius="lg"
+                    shadow="xs"
+                    p="lg"
+                  >
+                    <Stack gap="sm">
+                      <Group justify="space-between" align="flex-start">
+                        <Stack gap={2}>
+                          <Text size="sm" c="dimmed">
+                            {metric.label}
+                          </Text>
+                          <Group gap={4}>
+                            <Text fw={600} size="lg">
+                              {metric.value.toLocaleString()}
+                            </Text>
+                            <Text size="sm" c="dimmed">
+                              {metric.unit}
+                            </Text>
+                          </Group>
+                        </Stack>
+                        <Badge color="teal" variant="outline">
+                          {metric.percentile}%
+                        </Badge>
+                      </Group>
+                      <Progress
+                        value={metric.percentile}
+                        color="teal"
+                        size="lg"
+                        radius="xl"
+                        animated
+                      />
+                    </Stack>
+                  </Card>
+                ))}
+              </SimpleGrid>
+
+              {/* 未認証時のオーバーレイ */}
+              {!isAuthenticated && (
+                <>
+                  <Overlay
+                    color="#fff"
+                    backgroundOpacity={0.6}
+                    blur={3}
+                    radius="lg"
+                  />
+                  <Box
+                    pos="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 201,
+                    }}
+                  >
+                    <Stack gap="xs" align="center">
+                      <Text size="sm" c="dark" fw={500} ta="center">
+                        コンテンツを閲覧するには
+                      </Text>
+                      <Group gap="xs">
+                        <Button
+                          component="a"
+                          href="/auth/login?screen_hint=signup"
+                          size="sm"
+                          radius="xl"
+                          color="blue"
+                        >
+                          無料ユーザー登録
+                        </Button>
+                        <Button
+                          component="a"
+                          href="/auth/login"
+                          size="sm"
+                          radius="xl"
+                          variant="outline"
+                          color="blue"
+                        >
+                          ログイン
+                        </Button>
+                      </Group>
+                    </Stack>
+                  </Box>
+                </>
+              )}
+            </Box>
+          )}
         </Stack>
       ) : (
         <Paper radius="xl" withBorder p="xl" ta="center">
