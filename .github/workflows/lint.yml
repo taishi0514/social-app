@@ -17,7 +17,9 @@ jobs:
         uses: jdx/mise-action@5ac50f778e26fac95da98d50503682459e86d566
 
       - name: install dependecise
+        working-directory: ./next-web
         run: npm install
 
       - name: Run lint
+        working-directory: ./next-web
         run: pnpm run lint
