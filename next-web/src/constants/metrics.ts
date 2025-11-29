@@ -6,7 +6,7 @@ export type MetricKey =
   | "cigarettes"
   | "alcohol";
 
- export type MetricConfig = {
+export type MetricConfig = {
   label: string;
   unit: string;
   hint: string;

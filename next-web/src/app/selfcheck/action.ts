@@ -137,7 +137,6 @@ export async function submitSelfCheck(formData: FormData) {
 // resultテーブルを指標別にグループ化し、selfcheck再保存（1回目も含む）のたびに
 // 全Metricsのpercentileを再計算してユーザー間の順位を最新に保つ
 async function updatePercentilesForAllMetrics(tx: Prisma.TransactionClient) {
-  
   const metrics = await tx.result.groupBy({ by: ["metric"] });
 
   for (const metricGroup of metrics) {

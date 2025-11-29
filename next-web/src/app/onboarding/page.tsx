@@ -43,7 +43,8 @@ export default async function OnboardingPage({
     where: { auth0UserId: session.user.sub },
   });
 
-  const defaultName = existingUser?.name ?? getFirstParam(searchParams?.name) ?? "";
+  const defaultName =
+    existingUser?.name ?? getFirstParam(searchParams?.name) ?? "";
   const errorMessage = getFirstParam(searchParams?.error);
   const hasProfile = Boolean(existingUser?.name);
   const title = hasProfile ? "プロフィールを編集" : "プロフィールを作成";
@@ -106,7 +107,9 @@ export default async function OnboardingPage({
               color="gray"
               radius="xl"
               size="sm"
-              styles={{ root: { "&:hover": { backgroundColor: "transparent" } } }}
+              styles={{
+                root: { "&:hover": { backgroundColor: "transparent" } },
+              }}
             >
               ← トップへ戻る
             </Button>

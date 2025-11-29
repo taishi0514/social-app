@@ -2,7 +2,10 @@ import { notFound } from "next/navigation";
 
 import prisma from "@/lib/client";
 
-import { MetricDashboard, type MetricViewModel } from "@/app/dashboard/MetricDashboard";
+import {
+  MetricDashboard,
+  type MetricViewModel,
+} from "@/app/dashboard/MetricDashboard";
 import {
   METRIC_CONFIG,
   type MetricConfig,
@@ -76,7 +79,11 @@ export default async function SharePage({ params }: SharePageProps) {
       }}
     >
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
-        <MetricDashboard metrics={metrics} userName={userName} sharePath={sharePath} />
+        <MetricDashboard
+          metrics={metrics}
+          userName={userName}
+          sharePath={sharePath}
+        />
       </div>
     </div>
   );
