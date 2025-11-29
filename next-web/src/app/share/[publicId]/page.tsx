@@ -1,30 +1,31 @@
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import prisma from "@/lib/client";
-import { auth0 } from "@/lib/auth0";
 
-import { MetricDashboard, type MetricViewModel } from "./MetricDashboard";
+import { MetricDashboard, type MetricViewModel } from "@/app/dashboard/MetricDashboard";
 import {
   METRIC_CONFIG,
   type MetricConfig,
   type MetricKey,
 } from "@/constants/metrics";
 
-const DASHBOARD_PATH = "/dashboard";
+type SharePageProps = {
+  params: { publicId: string };
+};
 
-export default async function DashboardPage() {
-  const session = await auth0.getSession();
-  if (!session?.user?.sub) {
-    redirect(`/login?returnTo=${encodeURIComponent(DASHBOARD_PATH)}`);
+export default async function SharePage({ params }: SharePageProps) {
+  const { publicId } = params;
+  if (!publicId) {
+    notFound();
   }
 
   const user = await prisma.user.findUnique({
-    where: { auth0UserId: session.user.sub },
+    where: { publicId },
     include: { info: true, results: true },
   });
 
   if (!user) {
-    redirect("/onboarding");
+    notFound();
   }
 
   const info = user.info;
@@ -63,8 +64,8 @@ export default async function DashboardPage() {
     })
     .filter((item): item is MetricViewModel => Boolean(item));
 
-  const userName = user.name ?? session.user.name ?? "あなた";
-  const sharePath = user.publicId ? `/share/${user.publicId}` : "";
+  const userName = user.name ?? user.email ?? "ユーザー";
+  const sharePath = `/share/${user.publicId}`;
 
   return (
     <div
@@ -75,11 +76,7 @@ export default async function DashboardPage() {
       }}
     >
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
-        <MetricDashboard
-          metrics={metrics}
-          userName={userName}
-          sharePath={sharePath}
-        />
+        <MetricDashboard metrics={metrics} userName={userName} sharePath={sharePath} />
       </div>
     </div>
   );

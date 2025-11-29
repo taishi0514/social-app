@@ -41,16 +41,28 @@ export default async function Header() {
           </Anchor>
 
           {isAuthenticated ? (
-            <Button
-              component="a"
-              href={`/auth/logout?returnTo=${logoutReturnTo}`}
-              variant="outline"
-              radius="xl"
-              size="sm"
-              color="gray"
-            >
-              ログアウト
-            </Button>
+            <Group gap="xs">
+              <Button
+                component={Link}
+                href="/dashboard"
+                radius="xl"
+                size="sm"
+                 color="gray"
+                variant="outline"
+              >
+                結果を確認
+              </Button>
+              <Button
+                component="a"
+                href={`/auth/logout?returnTo=${logoutReturnTo}`}
+                variant="outline"
+                radius="xl"
+                size="sm"
+                color="gray"
+              >
+                ログアウト
+              </Button>
+            </Group>
           ) : (
             <Group gap="xs">
               <Button

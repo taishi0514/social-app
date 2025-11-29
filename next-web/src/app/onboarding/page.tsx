@@ -8,7 +8,6 @@ import {
   Flex,
   Paper,
   Stack,
-  Text,
   TextInput,
   Title,
 } from "@mantine/core";
@@ -44,19 +43,10 @@ export default async function OnboardingPage({
     where: { auth0UserId: session.user.sub },
   });
 
-  const defaultName =
-    existingUser?.name ??
-    getFirstParam(searchParams?.name) ??
-    session.user.name ??
-    session.user.email ??
-    "";
+  const defaultName = existingUser?.name ?? getFirstParam(searchParams?.name) ?? "";
   const errorMessage = getFirstParam(searchParams?.error);
   const hasProfile = Boolean(existingUser?.name);
   const title = hasProfile ? "プロフィールを編集" : "プロフィールを作成";
-  const description = hasProfile
-    ? "表示名を更新してプロフィールを整えましょう。"
-    : "表示名を入力して会員登録を完了してください。";
-
   return (
     <Flex
       component="main"
@@ -69,10 +59,11 @@ export default async function OnboardingPage({
     >
       <Box w="100%" maw={640}>
         <Paper radius="xl" shadow="lg" withBorder p={{ base: "lg", md: "xl" }}>
-          <Stack gap="lg">
+          <Stack gap="lg" align="center">
             <Stack gap={4} ta="center">
-              <Title order={1}>{title}</Title>
-              <Text c="dimmed">{description}</Text>
+              <Title order={2} c="gray.7">
+                {title}
+              </Title>
             </Stack>
 
             {errorMessage ? (
@@ -82,7 +73,7 @@ export default async function OnboardingPage({
             ) : null}
 
             <form action={completeOnboarding}>
-              <Stack gap="md">
+              <Stack gap="md" align="center">
                 <TextInput
                   label="ユーザー名"
                   name="name"
@@ -91,10 +82,18 @@ export default async function OnboardingPage({
                   placeholder="例: 太郎"
                   radius="lg"
                   size="md"
+                  w={380}
+                  c="gray"
                   autoComplete="name"
                 />
 
-                <Button type="submit" radius="xl" size="md" color="teal">
+                <Button
+                  type="submit"
+                  radius="xl"
+                  size="md"
+                  color="teal"
+                  maw={360}
+                >
                   {hasProfile ? "プロフィールを更新" : "登録する"}
                 </Button>
               </Stack>
@@ -107,6 +106,7 @@ export default async function OnboardingPage({
               color="gray"
               radius="xl"
               size="sm"
+              styles={{ root: { "&:hover": { backgroundColor: "transparent" } } }}
             >
               ← トップへ戻る
             </Button>
