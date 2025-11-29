@@ -4,7 +4,7 @@ import { Auth0Client } from "@auth0/nextjs-auth0/server";
 const domain = env.AUTH0_DOMAIN;
 const clientId = env.AUTH0_CLIENT_ID;
 const clientSecret = env.AUTH0_CLIENT_SECRET;
-const appBaseUrl = env.APP_BASE_URL ?? env.AUTH0_BASE_URL;
+const appBaseUrl = env.APP_BASE_URL;
 const secret = env.AUTH0_SECRET;
 
 if (!domain || !clientId || !clientSecret || !appBaseUrl || !secret) {
