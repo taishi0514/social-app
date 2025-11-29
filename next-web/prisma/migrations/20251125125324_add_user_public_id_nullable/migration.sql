@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `users` ADD COLUMN `public_id` VARCHAR(191) NULL;
+ALTER TABLE `users` ADD COLUMN `public_id` VARCHAR(191) Not NULL;
 
 -- CreateIndex
 CREATE UNIQUE INDEX `users_public_id_key` ON `users`(`public_id`);
