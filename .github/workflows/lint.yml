@@ -22,4 +22,4 @@ jobs:
 
       - name: Run lint
         working-directory: ./next-web
-        run: pnpm run lint
+        run: npm run lint
