@@ -6,7 +6,6 @@ import { auth0 } from "@/lib/auth0";
 import { env } from "@/config";
 
 const appBaseUrl = env.APP_BASE_URL;
-("http://localhost:3000");
 const logoutReturnTo = encodeURIComponent(new URL("/", appBaseUrl).toString());
 const loginParams = new URLSearchParams({ returnTo: "/" }).toString();
 const signupParams = new URLSearchParams({
