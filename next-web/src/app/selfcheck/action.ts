@@ -91,58 +91,57 @@ export async function submitSelfCheck(formData: FormData) {
   const metricsToSave = (
     Object.entries(metricValues) as Array<[MetricKey, number | undefined]>
   ).filter(([, value]) => typeof value === "number" && Number.isFinite(value));
+  
+  const metricsForRecalc = Array.from(
+    new Set(metricsToSave.map(([key]) => key)),
+  );
 
-  await prisma.$transaction(async (tx) => {
-    await tx.info.upsert({
-      where: { userId: user.id },
-      update: updateData,
-      create: createData,
-    });
+  await prisma.$transaction(
+    async (tx) => {
+      await tx.info.upsert({
+        where: { userId: user.id },
+        update: updateData,
+        create: createData,
+      });
 
-    if (metricsToSave.length > 0) {
-      await Promise.all(
-        metricsToSave.map(async ([key, value]) => {
-          const metric = key as ResultMetric;
-          const existing = await tx.result.findFirst({
-            where: { userId: user.id, metric },
-            select: { id: true },
-          });
-
-          if (existing) {
-            await tx.result.update({
-              where: { id: existing.id },
-              data: { score: value },
-            });
-          } else {
-            await tx.result.create({
-              data: {
+      if (metricsToSave.length > 0) {
+        await Promise.all(
+          metricsToSave.map(async ([key, value]) => {
+            const metric = key as ResultMetric;
+            await tx.result.upsert({
+              where: { userId_metric: { userId: user.id, metric } },
+              update: { score: value },
+              create: {
                 userId: user.id,
                 metric,
                 score: value!,
                 percentile: 0,
               },
             });
-          }
-        }),
-      );
+          }),
+        );
 
-      await updatePercentilesForAllMetrics(tx);
-    }
-  });
+        await updatePercentilesForMetrics(tx, metricsForRecalc);
+      }
+    },
+    {
+      timeout: 10_000,
+    },
+  );
 
   revalidatePath(SELF_CHECK_PATH);
   redirect(`/waiting`);
 }
 
-// resultテーブルを指標別にグループ化し、selfcheck再保存（1回目も含む）のたびに
-// 全Metricsのpercentileを再計算してユーザー間の順位を最新に保つ
-async function updatePercentilesForAllMetrics(tx: Prisma.TransactionClient) {
-  const metrics = await tx.result.groupBy({ by: ["metric"] });
-
-  for (const metricGroup of metrics) {
-    const sortOrder = isBetterWhenLower(metricGroup.metric) ? "desc" : "asc";
+// selfcheckで更新のあった指標だけpercentileを再計算して順位を最新に保つ
+async function updatePercentilesForMetrics(
+  tx: Prisma.TransactionClient,
+  metrics: MetricKey[],
+) {
+  for (const metric of metrics) {
+    const sortOrder = isBetterWhenLower(metric) ? "desc" : "asc";
     const results = await tx.result.findMany({
-      where: { metric: metricGroup.metric },
+      where: { metric },
       orderBy: { score: sortOrder },
     });
 
