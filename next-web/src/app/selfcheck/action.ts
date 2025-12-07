@@ -91,7 +91,7 @@ export async function submitSelfCheck(formData: FormData) {
   const metricsToSave = (
     Object.entries(metricValues) as Array<[MetricKey, number | undefined]>
   ).filter(([, value]) => typeof value === "number" && Number.isFinite(value));
-  
+
   const metricsForRecalc = Array.from(
     new Set(metricsToSave.map(([key]) => key)),
   );
