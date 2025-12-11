@@ -71,7 +71,7 @@ export default async function DashboardPage() {
       style={{
         minHeight: "100vh",
         background: "var(--mantine-color-gray-0)",
-        padding: "40px 16px",
+        padding: "40px 16px 130px",
       }}
     >
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>

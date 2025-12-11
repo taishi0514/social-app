@@ -50,14 +50,24 @@ export default async function SelfCheckPage({ searchParams }: PageProps) {
       : undefined;
 
   return (
-    <SelfCheckForm
-      userName={
-        dbUser?.name ?? session.user.name ?? session.user.email ?? undefined
-      }
-      errorMessage={errorMessage}
-      successMessage={successMessage}
-      initialValues={dbUser?.info ?? undefined}
-    />
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "var(--mantine-color-gray-0)",
+        padding: "40px 16px 80px",
+      }}
+    >
+      <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+        <SelfCheckForm
+          userName={
+            dbUser?.name ?? session.user.name ?? session.user.email ?? undefined
+          }
+          errorMessage={errorMessage}
+          successMessage={successMessage}
+          initialValues={dbUser?.info ?? undefined}
+        />
+      </div>
+    </div>
   );
 }
 
