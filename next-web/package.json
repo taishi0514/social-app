@@ -11,8 +11,8 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier . --check",
     "fix": "run-s fix:*",
-    "fix:eslint": "pnpm run lint:eslint --fix",
-    "fix:prettier": "pnpm run lint:prettier --write"
+    "fix:eslint": "npm run lint:eslint -- --fix",
+    "fix:prettier": "npm run lint:prettier -- --write"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.11.0",
