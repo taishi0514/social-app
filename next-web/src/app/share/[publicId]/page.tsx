@@ -13,11 +13,11 @@ import {
 } from "@/constants/metrics";
 
 type SharePageProps = {
-  params: { publicId: string };
+  params: Promise<{ publicId: string }>;
 };
 
 export default async function SharePage({ params }: SharePageProps) {
-  const { publicId } = params;
+  const { publicId } = await params;
   if (!publicId) {
     notFound();
   }
