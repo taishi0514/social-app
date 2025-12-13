@@ -173,7 +173,7 @@ export function MetricDashboard({
                           href="/auth/login?screen_hint=signup"
                           size="sm"
                           radius="xl"
-                          color="blue"
+                          color="teal"
                         >
                           無料ユーザー登録
                         </Button>
@@ -183,7 +183,7 @@ export function MetricDashboard({
                           size="sm"
                           radius="xl"
                           variant="outline"
-                          color="blue"
+                          color="teal"
                         >
                           ログイン
                         </Button>
