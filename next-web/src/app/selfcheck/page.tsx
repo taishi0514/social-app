@@ -41,6 +41,10 @@ export default async function SelfCheckPage({ searchParams }: PageProps) {
     },
   });
 
+  if (!dbUser?.name) {
+    redirect(`/onboarding?returnTo=${encodeURIComponent(SELF_CHECK_PATH)}`);
+  }
+
   const awaitedParams = await searchParams;
   const errorMessage = getFirstParam(awaitedParams.error);
   const statusParam = getFirstParam(awaitedParams.status);
@@ -60,7 +64,7 @@ export default async function SelfCheckPage({ searchParams }: PageProps) {
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
         <SelfCheckForm
           userName={
-            dbUser?.name ?? session.user.name ?? session.user.email ?? undefined
+            dbUser?.name ?? undefined
           }
           errorMessage={errorMessage}
           successMessage={successMessage}

@@ -14,7 +14,10 @@ export default async function LoginPage() {
     redirect("/");
   }
 
-  const loginParams = new URLSearchParams({ returnTo: "/" }).toString();
+  const loginParams = new URLSearchParams({
+    returnTo: "/",
+    ui_locales: "ja",
+  }).toString();
 
   redirect(`/auth/login?${loginParams}`);
 }
