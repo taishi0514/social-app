@@ -31,7 +31,7 @@ type SearchParams = {
 export default async function OnboardingPage({
   searchParams,
 }: {
-  searchParams?: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
   const session = await auth0.getSession();
 
@@ -43,9 +43,9 @@ export default async function OnboardingPage({
     where: { auth0UserId: session.user.sub },
   });
 
-  const defaultName =
-    existingUser?.name ?? getFirstParam(searchParams?.name) ?? "";
-  const errorMessage = getFirstParam(searchParams?.error);
+  const params = await searchParams;
+  const defaultName = existingUser?.name ?? getFirstParam(params.name) ?? "";
+  const errorMessage = getFirstParam(params.error);
   const hasProfile = Boolean(existingUser?.name);
   const title = hasProfile ? "プロフィールを編集" : "プロフィールを作成";
   return (

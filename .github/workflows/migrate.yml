@@ -1,0 +1,26 @@
+name: Migrate
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Setup mise
+        uses: jdx/mise-action@5ac50f778e26fac95da98d50503682459e86d566
+
+      - name: Install dependencies
+        working-directory: ./next-web
+        run: npm ci
+
+      - name: Prisma migrate deploy (Production)
+        working-directory: ./next-web
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }} 
+        run: npx prisma migrate deploy
+    
