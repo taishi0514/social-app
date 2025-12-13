@@ -123,13 +123,7 @@ export default async function Home({ searchParams }: HomeProps) {
         <Stack gap="xl">
           {/* ヘッダーセクション */}
           <Stack gap="md" align="center">
-            <Title
-              order={1}
-              size="1.8rem"
-              ta="center"
-              c="dark"
-              fw={600}
-            >
+            <Title order={1} size="1.8rem" ta="center" c="dark" fw={600}>
               ライフスタイルをもっとオープンに
             </Title>
             <Text size="md" c="dimmed" ta="center">
