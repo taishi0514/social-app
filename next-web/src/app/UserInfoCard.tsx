@@ -6,7 +6,6 @@ import {
   Anchor,
   Badge,
   Box,
-  Button,
   Card,
   Divider,
   Group,
@@ -60,7 +59,7 @@ export function UserInfoCard({
   };
 
   // メトリクス行のレンダリング
-  const renderMetricRow = (key: MetricKey) => {
+  const renderMetricRow = (key: MetricKey, shouldMask: boolean = false) => {
     const config = METRIC_CONFIG[key];
     const value = info?.[key] ?? null;
     const percentile = resultByMetric.get(key);
@@ -70,16 +69,26 @@ export function UserInfoCard({
         <Text size="sm" c="dimmed">
           {config.label}
         </Text>
-        <Group gap="xs">
-          <Text size="sm" fw={500}>
-            {formatValue(key, value)} {config.unit}
-          </Text>
-          {percentile !== undefined && (
-            <Badge size="xs" color="blue" variant="light">
-              上位{percentile}%
-            </Badge>
+        <Box pos="relative">
+          <Group gap="xs">
+            <Text size="sm" fw={500}>
+              {formatValue(key, value)} {config.unit}
+            </Text>
+            {percentile !== undefined && (
+              <Badge size="xs" color="blue" variant="light">
+                上位{percentile}%
+              </Badge>
+            )}
+          </Group>
+          {shouldMask && (
+            <Overlay
+              color="#fff"
+              backgroundOpacity={0.75}
+              blur={4}
+              radius="sm"
+            />
           )}
-        </Group>
+        </Box>
       </Group>
     );
   };
@@ -109,63 +118,9 @@ export function UserInfoCard({
         </Stack>
 
         {/* 非公開メトリクス（認証が必要、マスク対象） */}
-        <Box pos="relative">
-          <Stack gap="xs">
-            {PRIVATE_METRICS.map((key) => renderMetricRow(key))}
-          </Stack>
-
-          {/* 未認証時のオーバーレイ */}
-          {!isAuthenticated && (
-            <>
-              <Overlay
-                color="#fff"
-                backgroundOpacity={0.6}
-                blur={3}
-                radius="sm"
-              />
-              <Box
-                pos="absolute"
-                top={0}
-                left={0}
-                right={0}
-                bottom={0}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  zIndex: 201,
-                }}
-              >
-                <Stack gap={4} align="center">
-                  <Text size="xs" c="dark" fw={500} ta="center">
-                    コンテンツを閲覧するには
-                  </Text>
-                  <Group gap="xs">
-                    <Button
-                      component="a"
-                      href="/auth/login?screen_hint=signup"
-                      size="xs"
-                      radius="xl"
-                      color="blue"
-                    >
-                      無料ユーザー登録
-                    </Button>
-                    <Button
-                      component="a"
-                      href="/auth/login"
-                      size="xs"
-                      radius="xl"
-                      variant="outline"
-                      color="blue"
-                    >
-                      ログイン
-                    </Button>
-                  </Group>
-                </Stack>
-              </Box>
-            </>
-          )}
-        </Box>
+        <Stack gap="xs">
+          {PRIVATE_METRICS.map((key) => renderMetricRow(key, !isAuthenticated))}
+        </Stack>
 
         <Divider />
 

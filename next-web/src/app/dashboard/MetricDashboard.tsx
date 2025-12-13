@@ -232,22 +232,22 @@ export function MetricDashboard({
 
           {/* 非公開メトリクスのカード（マスク対象） */}
           {privateMetrics.length > 0 && (
-            <Box pos="relative">
-              <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
-                {privateMetrics.map((metric) => (
-                  <Card
-                    key={metric.key}
-                    withBorder
-                    radius="lg"
-                    shadow="xs"
-                    p="lg"
-                  >
-                    <Stack gap="sm">
-                      <Group justify="space-between" align="flex-start">
-                        <Stack gap={2}>
-                          <Text size="sm" c="dimmed">
-                            {metric.label}
-                          </Text>
+            <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
+              {privateMetrics.map((metric) => (
+                <Card
+                  key={metric.key}
+                  withBorder
+                  radius="lg"
+                  shadow="xs"
+                  p="lg"
+                >
+                  <Stack gap="sm">
+                    <Group justify="space-between" align="flex-start">
+                      <Stack gap={2}>
+                        <Text size="sm" c="dimmed">
+                          {metric.label}
+                        </Text>
+                        <Box pos="relative">
                           <Group gap={4}>
                             <Text fw={600} size="lg">
                               {metric.value.toLocaleString()}
@@ -256,11 +256,31 @@ export function MetricDashboard({
                               {metric.unit}
                             </Text>
                           </Group>
-                        </Stack>
+                          {!isAuthenticated && (
+                            <Overlay
+                              color="#fff"
+                              backgroundOpacity={0.75}
+                              blur={4}
+                              radius="sm"
+                            />
+                          )}
+                        </Box>
+                      </Stack>
+                      <Box pos="relative">
                         <Badge color="teal" variant="outline">
                           {metric.percentile}%
                         </Badge>
-                      </Group>
+                        {!isAuthenticated && (
+                          <Overlay
+                            color="#fff"
+                            backgroundOpacity={0.75}
+                            blur={4}
+                            radius="sm"
+                          />
+                        )}
+                      </Box>
+                    </Group>
+                    <Box pos="relative">
                       <Progress
                         value={metric.percentile}
                         color="teal"
@@ -268,63 +288,19 @@ export function MetricDashboard({
                         radius="xl"
                         animated
                       />
-                    </Stack>
-                  </Card>
-                ))}
-              </SimpleGrid>
-
-              {/* 未認証時のオーバーレイ */}
-              {!isAuthenticated && (
-                <>
-                  <Overlay
-                    color="#fff"
-                    backgroundOpacity={0.6}
-                    blur={3}
-                    radius="lg"
-                  />
-                  <Box
-                    pos="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      zIndex: 201,
-                    }}
-                  >
-                    <Stack gap="xs" align="center">
-                      <Text size="sm" c="dark" fw={500} ta="center">
-                        コンテンツを閲覧するには
-                      </Text>
-                      <Group gap="xs">
-                        <Button
-                          component="a"
-                          href="/auth/login?screen_hint=signup"
-                          size="sm"
+                      {!isAuthenticated && (
+                        <Overlay
+                          color="#fff"
+                          backgroundOpacity={0.75}
+                          blur={4}
                           radius="xl"
-                          color="blue"
-                        >
-                          無料ユーザー登録
-                        </Button>
-                        <Button
-                          component="a"
-                          href="/auth/login"
-                          size="sm"
-                          radius="xl"
-                          variant="outline"
-                          color="blue"
-                        >
-                          ログイン
-                        </Button>
-                      </Group>
-                    </Stack>
-                  </Box>
-                </>
-              )}
-            </Box>
+                        />
+                      )}
+                    </Box>
+                  </Stack>
+                </Card>
+              ))}
+            </SimpleGrid>
           )}
         </Stack>
       ) : (
