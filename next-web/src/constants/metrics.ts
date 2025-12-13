@@ -6,6 +6,16 @@ export type MetricKey =
   | "cigarettes"
   | "alcohol";
 
+// 認証不要で表示できるメトリクス
+export const PUBLIC_METRICS: MetricKey[] = [
+  "walking",
+  "workOut",
+  "readingHabit",
+];
+
+// 認証が必要なメトリクス（マスク対象）
+export const PRIVATE_METRICS: MetricKey[] = ["cigarettes", "alcohol", "salary"];
+
 export type MetricConfig = {
   label: string;
   unit: string;

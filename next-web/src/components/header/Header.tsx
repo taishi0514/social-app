@@ -52,7 +52,7 @@ export default async function Header() {
                 color="gray"
                 variant="outline"
               >
-                結果を確認
+                ダッシュボードへ
               </Button>
               <Button
                 component="a"
