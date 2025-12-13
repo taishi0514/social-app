@@ -12,7 +12,11 @@
     "lint:prettier": "prettier . --check",
     "fix": "run-s fix:*",
     "fix:eslint": "pnpm run lint:eslint --fix",
-    "fix:prettier": "pnpm run lint:prettier --write"
+    "fix:prettier": "pnpm run lint:prettier --write",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.11.0",
