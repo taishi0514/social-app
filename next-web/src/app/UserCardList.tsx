@@ -42,12 +42,6 @@ export function UserCardList({
 
   return (
     <Stack gap="lg">
-      {!isAuthenticated && (
-        <Text size="sm" c="dimmed" ta="center">
-          年収データを見るにはログインが必要です
-        </Text>
-      )}
-
       <Group justify="space-between" align="center">
         <Text size="sm" c="dimmed">
           全 {totalCount.toLocaleString()} 件

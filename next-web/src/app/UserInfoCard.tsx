@@ -1,9 +1,6 @@
 "use client";
 
-import Link from "next/link";
-
 import {
-  Anchor,
   Badge,
   Box,
   Card,
@@ -101,9 +98,6 @@ export function UserInfoCard({
           <Text size="sm" c="dimmed">
             ユーザー #{index + 1}
           </Text>
-          <Badge color="teal" variant="light" size="sm">
-            公開中
-          </Badge>
         </Group>
 
         <Text fw={600} size="lg">
@@ -121,21 +115,6 @@ export function UserInfoCard({
         <Stack gap="xs">
           {PRIVATE_METRICS.map((key) => renderMetricRow(key, !isAuthenticated))}
         </Stack>
-
-        <Divider />
-
-        {/* 詳細リンク */}
-        <Box ta="right">
-          <Anchor
-            component={Link}
-            href={`/share/${user.publicId}`}
-            size="sm"
-            fw={500}
-            c="blue"
-          >
-            詳しいデータを見る →
-          </Anchor>
-        </Box>
       </Stack>
     </Card>
   );

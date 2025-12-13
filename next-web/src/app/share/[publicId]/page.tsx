@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 
-import { auth0 } from "@/lib/auth0";
 import prisma from "@/lib/client";
 
 import {
@@ -22,9 +21,6 @@ export default async function SharePage({ params }: SharePageProps) {
   if (!publicId) {
     notFound();
   }
-
-  const session = await auth0.getSession();
-  const isAuthenticated = Boolean(session?.user);
 
   const user = await prisma.user.findUnique({
     where: { publicId },
@@ -87,7 +83,6 @@ export default async function SharePage({ params }: SharePageProps) {
           metrics={metrics}
           userName={userName}
           sharePath={sharePath}
-          isAuthenticated={isAuthenticated}
         />
       </div>
     </div>
