@@ -2,8 +2,11 @@ import Link from "next/link";
 
 import { Box, Button, Container, Paper, Stack, Title } from "@mantine/core";
 import ScrollToTop from "@/components/ScrollToTop";
+import { ensureOnboarded } from "@/lib/ensureOnboarded";
 
-export default function WaitingPage() {
+export default async function WaitingPage() {
+  await ensureOnboarded("/");
+
   return (
     <Box
       component="section"

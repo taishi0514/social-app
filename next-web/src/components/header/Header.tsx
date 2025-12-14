@@ -7,10 +7,14 @@ import { env } from "@/config";
 
 const appBaseUrl = env.APP_BASE_URL;
 const logoutReturnTo = encodeURIComponent(new URL("/", appBaseUrl).toString());
-const loginParams = new URLSearchParams({ returnTo: "/" }).toString();
+const loginParams = new URLSearchParams({
+  returnTo: "/",
+  ui_locales: "ja",
+}).toString();
 const signupParams = new URLSearchParams({
   returnTo: "/",
   screen_hint: "signup",
+  ui_locales: "ja",
 }).toString();
 
 export default async function Header() {

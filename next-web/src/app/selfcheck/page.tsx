@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-
 import prisma from "@/lib/client";
-import { auth0 } from "@/lib/auth0";
+import { ensureOnboarded } from "@/lib/ensureOnboarded";
 
 import SelfCheckForm from "./SelfCheckForm";
 
@@ -17,11 +15,7 @@ type PageProps = {
 };
 
 export default async function SelfCheckPage({ searchParams }: PageProps) {
-  const session = await auth0.getSession();
-
-  if (!session?.user) {
-    redirect(`/login?returnTo=${encodeURIComponent(SELF_CHECK_PATH)}`);
-  }
+  const session = await ensureOnboarded(SELF_CHECK_PATH);
 
   const dbUser = await prisma.user.findUnique({
     where: { auth0UserId: session.user.sub },
@@ -59,9 +53,7 @@ export default async function SelfCheckPage({ searchParams }: PageProps) {
     >
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
         <SelfCheckForm
-          userName={
-            dbUser?.name ?? session.user.name ?? session.user.email ?? undefined
-          }
+          userName={dbUser?.name ?? undefined}
           errorMessage={errorMessage}
           successMessage={successMessage}
           initialValues={dbUser?.info ?? undefined}

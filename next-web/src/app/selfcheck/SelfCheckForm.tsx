@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import {
   Alert,
   Box,
@@ -100,6 +101,11 @@ export default function SelfCheckForm({
       <Flex justify="center" align="center" w="100%">
         <form
           action={submitSelfCheck}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
           style={{ width: "100%", maxWidth: "720px" }}
         >
           <Paper
@@ -167,6 +173,16 @@ function NumericField({
   suffix,
   initialValue,
 }: NumericFieldConfig) {
+  const [value, setValue] = useState<string | number | undefined>(
+    initialValue ?? undefined,
+  );
+
+  const toHalfWidth = useCallback((val: string) => {
+    return val.replace(/[０-９]/g, (c) =>
+      String.fromCharCode(c.charCodeAt(0) - 0xfee0),
+    );
+  }, []);
+
   return (
     <Paper withBorder radius="lg" p="lg">
       <Stack gap="md">
@@ -178,12 +194,23 @@ function NumericField({
         </Text>
         <NumberInput
           name={name}
+          value={value}
           label={title}
           placeholder={placeholder}
           suffix={suffix}
           min={0}
           clampBehavior="strict"
-          defaultValue={initialValue ?? undefined}
+          inputMode="numeric"
+          allowNegative={false}
+          allowDecimal={false}
+          onChange={(val) => {
+            if (typeof val === "string") {
+              const half = toHalfWidth(val);
+              setValue(half);
+            } else {
+              setValue(val);
+            }
+          }}
         />
       </Stack>
     </Paper>
