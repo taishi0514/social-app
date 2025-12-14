@@ -46,6 +46,10 @@ export default async function OnboardingPage({
   const params = await searchParams;
   const defaultName = existingUser?.name ?? getFirstParam(params.name) ?? "";
   const errorMessage = getFirstParam(params.error);
+  const errorTitle = errorMessage?.includes("プロフィール")
+    ? "お知らせ"
+    : "入力エラー";
+  const errorColor = errorMessage?.includes("プロフィール") ? "blue" : "red";
   const hasProfile = Boolean(existingUser?.name);
   const title = hasProfile ? "プロフィールを編集" : "プロフィールを作成";
   return (
@@ -68,7 +72,7 @@ export default async function OnboardingPage({
             </Stack>
 
             {errorMessage ? (
-              <Alert color="red" radius="lg" title="入力エラー">
+              <Alert color={errorColor} radius="lg" title={errorTitle}>
                 {errorMessage}
               </Alert>
             ) : null}
@@ -83,7 +87,7 @@ export default async function OnboardingPage({
                   placeholder="例: 太郎"
                   radius="lg"
                   size="md"
-                  w={380}
+                  w={{ base: "100%", sm: 380 }}
                   c="gray"
                   autoComplete="name"
                 />
@@ -108,7 +112,7 @@ export default async function OnboardingPage({
               radius="xl"
               size="sm"
               styles={{
-                root: { "&:hover": { backgroundColor: "transparent" } },
+                root: { "&:hover": { backgroundColor: "透明" } },
               }}
             >
               ← トップへ戻る

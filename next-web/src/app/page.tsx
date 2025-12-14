@@ -144,16 +144,18 @@ export default async function Home({ searchParams }: HomeProps) {
                 >
                   {hasProfileName ? "プロフィール編集へ" : "プロフィール登録へ"}
                 </Button>
-                <Button
-                  component={Link}
-                  href="/selfcheck"
-                  radius="xl"
-                  size="md"
-                  variant="light"
-                  color="teal"
-                >
-                  セルフチェック診断
-                </Button>
+                {hasProfileName && (
+                  <Button
+                    component={Link}
+                    href="/selfcheck"
+                    radius="xl"
+                    size="md"
+                    variant="light"
+                    color="teal"
+                  >
+                    セルフチェック診断
+                  </Button>
+                )}
               </Group>
             )}
           </Stack>

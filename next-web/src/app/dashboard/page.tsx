@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import prisma from "@/lib/client";
-import { auth0 } from "@/lib/auth0";
+import { ensureOnboarded } from "@/lib/ensureOnboarded";
 
 import { MetricDashboard, type MetricViewModel } from "./MetricDashboard";
 import {
@@ -13,10 +13,7 @@ import {
 const DASHBOARD_PATH = "/dashboard";
 
 export default async function DashboardPage() {
-  const session = await auth0.getSession();
-  if (!session?.user?.sub) {
-    redirect(`/login?returnTo=${encodeURIComponent(DASHBOARD_PATH)}`);
-  }
+  const session = await ensureOnboarded(DASHBOARD_PATH);
 
   const user = await prisma.user.findUnique({
     where: { auth0UserId: session.user.sub },

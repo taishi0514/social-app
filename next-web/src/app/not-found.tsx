@@ -1,6 +1,14 @@
 import Link from "next/link";
 
-import { Box, Button, Container, Paper, Stack, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 
 export default function NotFound() {
   return (
