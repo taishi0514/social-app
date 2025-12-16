@@ -129,7 +129,7 @@ export default function SelfCheckForm({
               ) : null}
 
               <Stack gap="xs">
-                <Title order={2} ta="center" c="gray">
+                <Title order={3} ta="center" c="gray">
                   セルフチェック
                 </Title>
                 <Text ta="center" c="dimmed">

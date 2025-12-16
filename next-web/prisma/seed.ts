@@ -63,6 +63,8 @@ async function main() {
     const userName = `${FIRST_NAMES[i % FIRST_NAMES.length]}${i + 1}`;
     const email = `user${i + 1}@example.com`;
     const auth0UserId = `auth0|dummy_user_${i + 1}`;
+    const birthDate = new Date(1990, 0, 1);
+    const gender = "unspecified";
 
     // ランダムなメトリクス値を生成
     const salary = randomInt(300, 1200); // 300万〜1200万
@@ -77,6 +79,8 @@ async function main() {
       data: {
         name: userName,
         email: email,
+        birthDate,
+        gender,
         auth0UserId: auth0UserId,
         info: {
           create: {

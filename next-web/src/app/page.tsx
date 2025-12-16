@@ -62,6 +62,17 @@ export default async function Home({ searchParams }: HomeProps) {
     take: ITEMS_PER_PAGE,
   });
 
+  // 生年月日（birthDate）から年齢を求める処理
+  function calcAge(birthDate: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
   // UserInfoCardData形式に変換
   const maskPrivateInfo = (
     info: {
@@ -103,6 +114,8 @@ export default async function Home({ searchParams }: HomeProps) {
 
     return {
       publicId: user.publicId,
+      age: user.birthDate ? calcAge(user.birthDate) : 0,
+      gender: user.gender ?? "unspecified",
       info: maskPrivateInfo(baseInfo),
       results: visibleResults.map((r) => ({
         metric: r.metric,
@@ -123,10 +136,17 @@ export default async function Home({ searchParams }: HomeProps) {
         <Stack gap="xl">
           {/* ヘッダーセクション */}
           <Stack gap="md" align="center">
-            <Title order={1} size="1.8rem" ta="center" c="dark" fw={600}>
+            <Title
+              order={2}
+              size="1.4rem"
+              ta="center"
+              c="dark"
+              fw={600}
+              mt={80}
+            >
               ライフスタイルをもっとオープンに
             </Title>
-            <Text size="md" c="dimmed" ta="center">
+            <Text size="sm" c="dimmed" ta="center">
               {isAuthenticated
                 ? "みんなのライフスタイルデータを見てみよう"
                 : "※年収データを見るにはログインが必要です"}

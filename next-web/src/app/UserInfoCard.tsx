@@ -19,6 +19,8 @@ import {
 } from "@/constants/metrics";
 
 export type UserInfoCardData = {
+  age: number;
+  gender: string;
   publicId: string;
   info: {
     salary: number | null;
@@ -40,11 +42,7 @@ type UserInfoCardProps = {
   index: number;
 };
 
-export function UserInfoCard({
-  user,
-  isAuthenticated,
-  index,
-}: UserInfoCardProps) {
+export function UserInfoCard({ user, isAuthenticated }: UserInfoCardProps) {
   const info = user.info;
   const resultByMetric = new Map(
     user.results.map((r) => [r.metric as MetricKey, r.percentile]),
@@ -53,6 +51,12 @@ export function UserInfoCard({
   const formatValue = (key: MetricKey, value: number | null): string => {
     if (value === null) return "-";
     return value.toLocaleString();
+  };
+
+  const genderLabelMap: Record<string, string> = {
+    male: "男性",
+    female: "女性",
+    unspecified: "未指定",
   };
 
   // メトリクス行のレンダリング
@@ -96,7 +100,8 @@ export function UserInfoCard({
         {/* ヘッダー */}
         <Group justify="space-between" align="center">
           <Text size="sm" c="dimmed">
-            ユーザー #{index + 1}
+            {user.age ? `${user.age}歳` : ""}{" "}
+            {genderLabelMap[user.gender] ?? ""}
           </Text>
         </Group>
 
