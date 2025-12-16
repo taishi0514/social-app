@@ -34,9 +34,9 @@ mise install
 
 ## 技術スタック
 
-- **Frontend**: Next.js
-- **Database**: TBD
-- **Deployment**: TBD
+- **Backend/Frontend**: Next.js/TypeScript
+- **Database**: MySQL
+- **Deployment**: Vercel
 
 ## セットアップ
 
