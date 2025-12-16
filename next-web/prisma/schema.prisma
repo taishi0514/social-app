@@ -15,10 +15,12 @@ datasource db {
 
 model User {
   id          Int      @id @default(autoincrement())
-  publicId    String  @unique @default(uuid()) @map("public_id")
+  publicId    String   @unique @default(uuid()) @map("public_id")
   auth0UserId String   @unique @map("auth0_user_id")
   name        String
   email       String   @unique
+  birthDate   DateTime @db.Date @map("birth_date")
+  gender      String
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
