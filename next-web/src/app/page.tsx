@@ -130,6 +130,7 @@ export default async function Home({ searchParams }: HomeProps) {
       mih="100vh"
       bg="var(--mantine-color-gray-0)"
       py="xl"
+      pb={100}
       px="md"
     >
       <Container size="lg">
@@ -154,16 +155,18 @@ export default async function Home({ searchParams }: HomeProps) {
 
             {isAuthenticated && (
               <Group gap="md" justify="center">
-                <Button
-                  component={Link}
-                  href="/onboarding"
-                  radius="xl"
-                  size="md"
-                  variant="light"
-                  color="teal"
-                >
-                  {hasProfileName ? "プロフィール編集へ" : "プロフィール登録へ"}
-                </Button>
+                {!hasProfileName && (
+                  <Button
+                    component={Link}
+                    href="/onboarding"
+                    radius="xl"
+                    size="md"
+                    variant="light"
+                    color="teal"
+                  >
+                    プロフィール登録へ
+                  </Button>
+                )}
                 {hasProfileName && (
                   <Button
                     component={Link}
