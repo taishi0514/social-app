@@ -4,6 +4,7 @@ import { Anchor, Box, Button, Container, Group, Text } from "@mantine/core";
 
 import { auth0 } from "@/lib/auth0";
 import { env } from "@/config";
+import { AuthenticatedMenu } from "./AuthenticatedMenu";
 
 const appBaseUrl = env.APP_BASE_URL;
 const logoutReturnTo = encodeURIComponent(new URL("/", appBaseUrl).toString());
@@ -43,28 +44,7 @@ export default async function Header() {
           </Anchor>
 
           {isAuthenticated ? (
-            <Group gap="xs">
-              <Button
-                component={Link}
-                href="/dashboard"
-                radius="xl"
-                size="sm"
-                color="gray"
-                variant="outline"
-              >
-                ダッシュボードへ
-              </Button>
-              <Button
-                component="a"
-                href={`/auth/logout?returnTo=${logoutReturnTo}`}
-                variant="outline"
-                radius="xl"
-                size="sm"
-                color="gray"
-              >
-                ログアウト
-              </Button>
-            </Group>
+            <AuthenticatedMenu logoutReturnTo={logoutReturnTo} />
           ) : (
             <Group gap="xs">
               <Button
