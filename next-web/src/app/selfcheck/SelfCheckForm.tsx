@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Flex,
+  Group,
   NumberInput,
   Paper,
   Stack,
@@ -129,7 +130,7 @@ export default function SelfCheckForm({
               ) : null}
 
               <Stack gap="xs">
-                <Title order={3} ta="center" c="gray">
+                <Title order={3} ta="center" c="gray" fw={550}>
                   セルフチェック
                 </Title>
                 <Text ta="center" c="dimmed">
@@ -148,15 +149,17 @@ export default function SelfCheckForm({
                 ))}
               </Stack>
 
-              <Button
-                type="submit"
-                radius="xl"
-                size="md"
-                color="teal"
-                variant="light"
-              >
-                スコアを算出
-              </Button>
+              <Group justify="center">
+                <Button
+                  type="submit"
+                  radius="xl"
+                  size="md"
+                  color="teal"
+                  variant="light"
+                >
+                  スコアを算出
+                </Button>
+              </Group>
             </Stack>
           </Paper>
         </form>
@@ -186,7 +189,7 @@ function NumericField({
   return (
     <Paper withBorder radius="lg" p="lg">
       <Stack gap="md">
-        <Title order={3} size="h4" c="gray">
+        <Title order={3} size="h4" c="gray" fw={550}>
           {title}
         </Title>
         <Text size="sm" c="dimmed">
@@ -195,7 +198,6 @@ function NumericField({
         <NumberInput
           name={name}
           value={value}
-          label={title}
           placeholder={placeholder}
           suffix={suffix}
           min={0}

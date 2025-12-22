@@ -116,6 +116,7 @@ export default async function Home({ searchParams }: HomeProps) {
       publicId: user.publicId,
       age: user.birthDate ? calcAge(user.birthDate) : 0,
       gender: user.gender ?? "unspecified",
+      isArchived: user.archivedAt !== null,
       info: maskPrivateInfo(baseInfo),
       results: visibleResults.map((r) => ({
         metric: r.metric,

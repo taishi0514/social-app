@@ -22,6 +22,7 @@ export type UserInfoCardData = {
   age: number;
   gender: string;
   publicId: string;
+  isArchived: boolean;
   info: {
     salary: number | null;
     walking: number | null;
@@ -100,8 +101,11 @@ export function UserInfoCard({ user, isAuthenticated }: UserInfoCardProps) {
         {/* ヘッダー */}
         <Group justify="space-between" align="center">
           <Text size="sm" c="dimmed">
-            {user.age ? `${user.age}歳` : ""}{" "}
-            {genderLabelMap[user.gender] ?? ""}
+            {user.isArchived
+              ? "退会済みユーザー"
+              : `${user.age ? `${user.age}歳` : ""} ${
+                  genderLabelMap[user.gender] ?? ""
+                }`}
           </Text>
         </Group>
 

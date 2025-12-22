@@ -13,6 +13,8 @@ export const env = createEnv({
     AUTH0_CLIENT_SECRET: z.string(),
     APP_BASE_URL: z.string(),
     AUTH0_SECRET: z.string(),
+    API_CLIENT_ID: z.string(),
+    API_CLIENT_SECRET: z.string(),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -22,5 +24,7 @@ export const env = createEnv({
     AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
     APP_BASE_URL: process.env.APP_BASE_URL,
     AUTH0_SECRET: process.env.AUTH0_SECRET,
+    API_CLIENT_ID: process.env.API_CLIENT_ID,
+    API_CLIENT_SECRET: process.env.API_CLIENT_SECRET,
   },
 });
