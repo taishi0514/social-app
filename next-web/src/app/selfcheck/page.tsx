@@ -21,7 +21,6 @@ export default async function SelfCheckPage({ searchParams }: PageProps) {
     where: { auth0UserId: session.user.sub },
     select: {
       name: true,
-      email: true,
       info: {
         select: {
           salary: true,

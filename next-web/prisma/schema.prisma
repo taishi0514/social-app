@@ -23,7 +23,9 @@ model User {
   gender      String
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
+  archivedAt  DateTime?  @map("archived_at")
 
+  withdrawal  UserWithdrawal?
   info    Info?
   results Result[]
 
@@ -68,6 +70,16 @@ model Result {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-   @@unique([userId, metric])
+  @@unique([userId, metric])
   @@map("result")
+}
+
+model UserWithdrawal {
+  id       Int      @id @default(autoincrement())
+  userId   Int      @unique
+  reason   String?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_withdrawals")
 }

@@ -29,7 +29,7 @@ export function AuthenticatedMenu({ logoutReturnTo }: AuthenticatedMenuProps) {
           ログアウト
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item component={Link} href="/withdrawal" color="red">
+        <Menu.Item component={Link} href="settings/withdrawal" color="red">
           退会の手続き
         </Menu.Item>
       </Menu.Dropdown>
