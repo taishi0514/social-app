@@ -83,6 +83,7 @@ export default async function SharePage({ params }: SharePageProps) {
           metrics={metrics}
           userName={userName}
           sharePath={sharePath}
+          showShareButton={false}
         />
       </div>
     </div>

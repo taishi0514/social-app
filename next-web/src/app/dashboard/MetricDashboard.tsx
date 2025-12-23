@@ -31,9 +31,15 @@ type Props = {
   metrics: MetricViewModel[];
   userName: string;
   sharePath: string;
+  showShareButton?: boolean;
 };
 
-export function MetricDashboard({ metrics, userName, sharePath }: Props) {
+export function MetricDashboard({
+  metrics,
+  userName,
+  sharePath,
+  showShareButton = true,
+}: Props) {
   const [activeKey, setActiveKey] = useState(metrics[0]?.key ?? "");
   const activeMetric = metrics.find((metric) => metric.key === activeKey);
   const [shareUrl, setShareUrl] = useState("");
@@ -56,10 +62,12 @@ export function MetricDashboard({ metrics, userName, sharePath }: Props) {
               直近のセルフチェック結果をもとに、各指標がコミュニティ内でどの位置にいるかを表示しています。
             </Text>
           </Stack>
-          <ShareToXButton
-            text={`${userName} さんのダッシュボードをチェック`}
-            url={shareUrl}
-          />
+          {showShareButton ? (
+            <ShareToXButton
+              text={`${userName} さんのダッシュボードをチェック`}
+              url={shareUrl}
+            />
+          ) : null}
         </Group>
       </Paper>
 
