@@ -1,34 +1,28 @@
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import prisma from "@/lib/client";
-
-import {
-  MetricDashboard,
-  type MetricViewModel,
-} from "@/app/dashboard/MetricDashboard";
+import { ensureOnboarded } from "@/lib/ensureOnboarded";
 import {
   METRIC_CONFIG,
   type MetricConfig,
   type MetricKey,
 } from "@/constants/metrics";
 
-type SharePageProps = {
-  params: Promise<{ publicId: string }>;
-};
+import { AnalysisPanel } from "../AnalysisPanel";
+import type { MetricViewModel } from "../MetricDashboard";
 
-export default async function SharePage({ params }: SharePageProps) {
-  const { publicId } = await params;
-  if (!publicId) {
-    notFound();
-  }
+const ANALYZE_PATH = "/dashboard/analyze";
+
+export default async function AnalyzePage() {
+  const session = await ensureOnboarded(ANALYZE_PATH);
 
   const user = await prisma.user.findUnique({
-    where: { publicId },
+    where: { auth0UserId: session.user.sub },
     include: { info: true, results: true },
   });
 
   if (!user) {
-    notFound();
+    redirect("/onboarding");
   }
 
   const info = user.info;
@@ -67,25 +61,18 @@ export default async function SharePage({ params }: SharePageProps) {
     })
     .filter((item): item is MetricViewModel => Boolean(item));
 
-  const userName = user.name ?? user.email ?? "ユーザー";
-  const sharePath = `/share/${user.publicId}`;
+  const userName = user.name ?? session.user.name ?? "あなた";
 
   return (
     <div
       style={{
         minHeight: "100vh",
         background: "var(--mantine-color-gray-0)",
-        padding: "40px 16px",
+        padding: "40px 16px 130px",
       }}
     >
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
-        <MetricDashboard
-          metrics={metrics}
-          userName={userName}
-          sharePath={sharePath}
-          showShareButton={false}
-          showAnalyzeButton={false}
-        />
+        <AnalysisPanel metrics={metrics} userName={userName} />
       </div>
     </div>
   );

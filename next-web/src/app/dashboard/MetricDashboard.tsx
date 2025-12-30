@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { MetricKey } from "@/constants/metrics";
+import Link from "next/link";
 
 import {
   Badge,
@@ -32,6 +33,8 @@ type Props = {
   userName: string;
   sharePath: string;
   showShareButton?: boolean;
+  showAnalyzeButton?: boolean;
+  analyzeHref?: string;
 };
 
 export function MetricDashboard({
@@ -39,6 +42,8 @@ export function MetricDashboard({
   userName,
   sharePath,
   showShareButton = true,
+  showAnalyzeButton = true,
+  analyzeHref = "/dashboard/analyze",
 }: Props) {
   const [activeKey, setActiveKey] = useState(metrics[0]?.key ?? "");
   const activeMetric = metrics.find((metric) => metric.key === activeKey);
@@ -62,12 +67,25 @@ export function MetricDashboard({
               直近のセルフチェック結果をもとに、各指標がコミュニティ内でどの位置にいるかを表示しています。
             </Text>
           </Stack>
-          {showShareButton ? (
-            <ShareToXButton
-              text={`${userName} さんのダッシュボードをチェック`}
-              url={shareUrl}
-            />
-          ) : null}
+          <Group gap="xs" wrap="wrap" justify="flex-end">
+            {showAnalyzeButton && (
+              <Button
+                component={Link}
+                href={analyzeHref}
+                radius="xl"
+                color="dark"
+                variant="outline"
+              >
+                AI分析
+              </Button>
+            )}
+            {showShareButton ? (
+              <ShareToXButton
+                text={`${userName} さんのダッシュボードをチェック`}
+                url={shareUrl}
+              />
+            ) : null}
+          </Group>
         </Group>
       </Paper>
 
@@ -77,8 +95,8 @@ export function MetricDashboard({
             {metrics.map((metric) => (
               <Button
                 key={metric.key}
-                variant={metric.key === activeKey ? "filled" : "light"}
-                color="teal"
+                variant={metric.key === activeKey ? "filled" : "outline"}
+                color="gray"
                 radius="xl"
                 onClick={() => setActiveKey(metric.key)}
               >
