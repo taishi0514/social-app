@@ -11,32 +11,32 @@ export async function POST() {
   }
 
   // ユーザーの最終分析日時を取得し、1日1回の制限を確認
-  // const user = await prisma.user.findUnique({
-  //   where: { auth0UserId: session.user.sub },
-  //   select: { id: true, lastAnalyzedAt: true },
-  // });
+  const user = await prisma.user.findUnique({
+    where: { auth0UserId: session.user.sub },
+    select: { id: true, lastAnalyzedAt: true },
+  });
 
-  // if (!user) {
-  //   return NextResponse.json({ error: "User not found" }, { status: 404 });
-  // }
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
 
-  // const now = new Date();
-  // const elapsed = user.lastAnalyzedAt
-  //   ? now.getTime() - user.lastAnalyzedAt.getTime()
-  //   : null;
-  // const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+  const now = new Date();
+  const elapsed = user.lastAnalyzedAt
+    ? now.getTime() - user.lastAnalyzedAt.getTime()
+    : null;
+  const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
-  // if (elapsed !== null && elapsed < ONE_DAY_MS) {
-  //   const remainingMs = ONE_DAY_MS - elapsed;
-  //   const remainingHours = Math.ceil(remainingMs / (60 * 60 * 1000));
-  //   return NextResponse.json(
-  //     {
-  //       error: "Too many requests",
-  //       message: `AI分析は24時間に1回までです。残り約${remainingHours}時間お待ちください。`,
-  //     },
-  //     { status: 429 },
-  //   );
-  // }
+  if (elapsed !== null && elapsed < ONE_DAY_MS) {
+    const remainingMs = ONE_DAY_MS - elapsed;
+    const remainingHours = Math.ceil(remainingMs / (60 * 60 * 1000));
+    return NextResponse.json(
+      {
+        error: "Too many requests",
+        message: `AI分析は24時間に1回までです。残り約${remainingHours}時間お待ちください。`,
+      },
+      { status: 429 },
+    );
+  }
 
   // ユーザーの最新結果を取得（シンプル版: 全結果をそのまま取得）
   const results = await prisma.result.findMany({
@@ -68,7 +68,7 @@ export async function POST() {
       {
         role: "system",
         content:
-          "あなたはライフスタイルの優しいコーチです。敬語で短く具体的に、各指標ごとに1文で提案してください。出力は各行「指標名: アドバイス」で改行区切り。指標名は日本語で。Markdownや記号（*, -, • など）は使わない。文頭の接続詞や「増やすために」等の定型句は避ける。医療判断はしないでください。",
+          "あなたはライフスタイルの優しいコーチです。敬語で短く的確に具体的に、各指標ごとに2文で提案してください。出力は各行「指標名: アドバイス」で改行区切り。指標名は日本語で。Markdownや記号（*, -, • など）は使わない。文頭の接続詞や「増やすために」等の定型句は避ける。パーセンタイルの数値は出力に含めず、評価は文章で述べる。70%以上は称賛と維持策、40〜69%は軽い改善提案、40%未満は具体的な改善策を1つ提示する。医療判断はしないでください。",
       },
       {
         role: "user",
@@ -78,10 +78,10 @@ export async function POST() {
   });
 
   // 実行時刻を更新
-  // await prisma.user.update({
-  //   where: { id: user.id },
-  //   data: { lastAnalyzedAt: now },
-  // });
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { lastAnalyzedAt: now },
+  });
 
   const text = completion.choices[0]?.message?.content ?? "";
   return NextResponse.json({ text });
