@@ -66,7 +66,6 @@ model Result {
   metric     ResultMetric
   score      Int
   percentile Int
-  computedAt DateTime     @default(now()) @map("computed_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
