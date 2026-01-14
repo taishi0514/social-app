@@ -27,7 +27,7 @@
 
 ## サイトURL
 
-URLは[こちら](social-app-phi-jet.vercel.app)
+URLは[こちら](https://social-app-phi-jet.vercel.app)
 
 ## データベーススキーマ
 
